@@ -1,0 +1,16 @@
+# Virtuelle Umgebungen
+venv/
+.env/
+
+# Bytecode & Cache
+__pycache__/
+*.py[cod]
+
+# Log-Dateien
+*.log
+
+# VSCode Settings (optional)
+.vscode/
+
+# Sonstige temporäre Dateien
+*.tmp
