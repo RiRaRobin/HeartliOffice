@@ -17,6 +17,14 @@ Fokus auf Übersichtlichkeit, schnelle Erfassung & Bearbeitung sowie einfache Fi
 | 1.4 | Parser & Helper schreiben | Python-Funktionen zum Laden, Validieren, Speichern | Funktionsfähige Parser |
 | 1.5 | Git-Repository initialisieren | Versionskontrolle mit Basiskommentaren | Git Repo bereit |
 
+### 1.2 Datenstruktur
+| Bereich      | Empfohlene Struktur                 | Begründung                                                                     |
+| ------------ | ----------------------------------- | ------------------------------------------------------------------------------ |
+| **Tasks**    | 1 Datei pro Task (`T-xxxx.yaml`)    | viele einzelne Einträge, häufige Änderungen, Archiv nötig                      |
+| **Meetings** | 1 Datei pro Meeting (`M-xxxx.yaml`) | pro Meeting oft mehrere Infos und Aufgaben, klarer Bezug                       |
+| **Fragen**   | 1 Datei pro Person (`max.yaml`)     | Fragen sind thematisch gruppiert nach Ansprechpartner, oft inhaltlich verwandt |
+
+
 **🎯 Meilenstein 1:** Datenstruktur & Parser sind stabil und können für Phase 2 (UI) verwendet werden.
 
 ---
