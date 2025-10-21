@@ -8,6 +8,8 @@ ROOT = Path(__file__).resolve().parent
 
 # === Data structure ===
 DATA = Path("00_data")
+DATA_EXAMPLES = DATA / "00_examples"
+
 DATA_TASKS = DATA / "01_tasks"
 
 DATA_MEETINGS = DATA / "02_meetings"
