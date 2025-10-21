@@ -11,6 +11,8 @@ DATA = Path("00_data")
 DATA_EXAMPLES = DATA / "00_examples"
 
 DATA_TASKS = DATA / "01_tasks"
+DATA_TASKS_ACTIVE = DATA_TASKS / "01_active"
+DATA_TASKS_ARCHIVE = DATA_TASKS / "02_archive"
 
 DATA_MEETINGS = DATA / "02_meetings"
 
