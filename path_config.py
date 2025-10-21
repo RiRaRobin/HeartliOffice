@@ -54,9 +54,10 @@ def check_paths(verbose=True):
         if isinstance(path, Path) and not path.exists():
             if verbose:
                 print(f"⚠️  {name} → Pfad existiert nicht: {path}")
-                
-# def convert_to_string(NAME):
-#     return str(NAME).replace("\\", ("/"))
+
+# Helping Function for create requirements          
+def convert_to_string(NAME):
+    return str(NAME).replace("\\", ("/"))
 
 # === Optional: direkt ausführbar als Tool ===
 if __name__ == "__main__":
