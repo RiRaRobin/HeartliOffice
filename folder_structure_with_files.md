@@ -14,7 +14,13 @@ Heartli_OfficeTool/
 ├── 📃 requirements.txt
 
 ├── 00_data/
+│   ├── 00_examples/
+│   │   📄 example_meeting.yaml
+│   │   📄 example_questions.yaml
+│   │   📄 example_task.yaml
 │   ├── 01_tasks/
+│   │   ├── 01_active/
+│   │   ├── 02_archive/
 │   ├── 02_meetings/
 │   ├── 03_questions/
 

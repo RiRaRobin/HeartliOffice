@@ -4,7 +4,10 @@
 Heartli_OfficeTool/
 
 ├── 00_data/
+│   ├── 00_examples/
 │   ├── 01_tasks/
+│   │   ├── 01_active/
+│   │   ├── 02_archive/
 │   ├── 02_meetings/
 │   ├── 03_questions/
 
