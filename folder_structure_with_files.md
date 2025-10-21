@@ -41,4 +41,15 @@ Heartli_OfficeTool/
 │   🐍 make_folder_structure_md.py
 
 ├── 03_legacy/
+
+├── src/
+│   🐍 __init__.py
+│   ├── common/
+│   │   🐍 __init__.py
+│   ├── meetings/
+│   │   🐍 __init__.py
+│   ├── questions/
+│   │   🐍 __init__.py
+│   ├── tasks/
+│   │   🐍 __init__.py
 ```

@@ -24,4 +24,10 @@ Heartli_OfficeTool/
 ├── 02_utils/
 
 ├── 03_legacy/
+
+├── src/
+│   ├── common/
+│   ├── meetings/
+│   ├── questions/
+│   ├── tasks/
 ```
