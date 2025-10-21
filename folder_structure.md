@@ -9,9 +9,14 @@ Heartli_OfficeTool/
 │   │   ├── 01_active/
 │   │   ├── 02_archive/
 │   ├── 02_meetings/
+│   │   ├── 01_active/
+│   │   ├── 02_archive/
 │   ├── 03_questions/
+│   │   ├── 01_active/
+│   │   ├── 02_archive/
 
 ├── 01_src/
+│   ├── 00_common/
 │   ├── 01_tasks/
 │   ├── 02_meetings/
 │   ├── 03_questions/
