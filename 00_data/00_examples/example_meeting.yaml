@@ -1,0 +1,12 @@
+id: M-2025-10-03-A
+projekt: ABC
+datum: 2025-10-03
+vorbereitung: |
+  Themenliste:
+  - Offene Fragen klären
+  - Zeitplan abstimmen
+infos: |
+  Max hat zugesagt, die Sensorliste bis nächste Woche zu schicken.
+aufgaben:
+  - T-2025-10-01-003
+  - "Neue Aufgabe: Protokoll schreiben"

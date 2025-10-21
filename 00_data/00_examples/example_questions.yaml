@@ -1,0 +1,9 @@
+person: Max
+fragen:
+  - id: Q-2025-10-01-002
+    frage: "Liegt die aktualisierte Stückliste schon vor?"
+    status: OFFEN
+    typ: FRAGE
+    verlinkte_aufgabe: T-2025-10-01-001
+    notizen: |
+      Sollte bis Dienstag beantwortet sein.

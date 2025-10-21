@@ -1,0 +1,17 @@
+id: T-2025-10-01-001
+beschreibung: Zeichnung XY anpassen für Projekt ABC
+projekt: ABC
+dokument_nr: BU_4711
+dokument_name: "Schaltplan Steuerung"
+auftrag_erhalten: 2025-09-28
+faellig_bis: 2025-10-05
+weitere_dokumente:
+  - "\\Server\Projekte\ABC\Doku\Liste.pdf"
+notizen: |
+  Max hat gesagt, er liefert den Input bis Dienstag.
+follow_up: |
+  02.10: Nachgefragt bei Max → wartet auf Luca
+status: OPEN
+dringlichkeit: 3
+verlinkte_fragen:
+  - Q-2025-10-01-002
