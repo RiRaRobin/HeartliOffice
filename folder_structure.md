@@ -1,0 +1,19 @@
+# 📁 Project Folder Structure (folders only)
+
+```text
+Heartli_OfficeTool/
+
+├── 00_data/
+│   ├── 01_tasks/
+│   ├── 02_meetings/
+│   ├── 03_questions/
+
+├── 01_src/
+│   ├── 01_tasks/
+│   ├── 02_meetings/
+│   ├── 03_questions/
+
+├── 02_utils/
+
+├── 03_legacy/
+```

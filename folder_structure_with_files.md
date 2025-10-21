@@ -1,0 +1,31 @@
+# 📁 Project Folder Structure (with files)
+
+Legend:
+🐍 Python 📈 CSV 🧠 Pickle 📄 Markdown 📃 Text 🧾 JSON 🗄️ DB 🖼️ Image 📑 PDF 📓 Notebook ℹ️ README
+
+```text
+Heartli_OfficeTool/
+├── 📄 PROJEKTPLAN.md
+├── 📑 PROJEKTPLAN.pdf
+├── ℹ️ README.md
+├── 📄 folder_structure.md
+├── 📄 folder_structure_with_files.md
+├── 🐍 path_config.py
+├── 📃 requirements.txt
+
+├── 00_data/
+│   ├── 01_tasks/
+│   ├── 02_meetings/
+│   ├── 03_questions/
+
+├── 01_src/
+│   ├── 01_tasks/
+│   ├── 02_meetings/
+│   ├── 03_questions/
+
+├── 02_utils/
+│   🐍 create_requirements.py
+│   🐍 make_folder_structure_md.py
+
+├── 03_legacy/
+```
