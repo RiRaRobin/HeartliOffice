@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, Qt
-from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem, QAbstractItemView
+from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem, QAbstractItemView, QCheckBox, QHBoxLayout, QVBoxLayout, QScrollArea
 from PySide6.QtGui import QColor, QBrush
 from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
@@ -90,6 +90,14 @@ class MainWindow(QMainWindow):
         
         # Tabellen-Setup optional
         self.setup_tables()
+        
+        # --- Projekt-Filter State
+        self._project_checks: dict[str, QCheckBox] = {}
+        self._cbAll: QCheckBox | None = None
+        self._project_filter_active: set[str] | None = None  # None = kein Filter (alles zeigen)
+
+        # Filter-UI bauen (aus den vorhandenen YAMLs)
+        self.build_project_filters()
 
         # Aktiven Button optisch markieren (optional)
         self.setStyleSheet("""
@@ -111,6 +119,13 @@ class MainWindow(QMainWindow):
             return
 
         rows = load_tasks_active()
+        
+        # ▼▼ Projektsicht filtern, wenn aktiv ▼▼
+        if self._project_filter_active is not None:
+            rows = [
+                r for r in rows
+                if (r.get("projekt") or "") in self._project_filter_active
+            ]
 
         # Spalten: 0 ID | 1 Beschreibung | 2 Projekt | 3 Status | 4 Prio | 5 Fällig
         table.setSortingEnabled(False)
@@ -252,6 +267,8 @@ class MainWindow(QMainWindow):
             def handle_saved():
                 if dlg.created_id:
                     QMessageBox.information(self, "Gespeichert", f"Neue Aufgabe erstellt: {dlg.created_id}")
+                    # 🔧 Projektfilter aktualisieren, bevor Tabelle neu geladen wird
+                    self.build_project_filters()
                     self.reload_tasks_views()
             dlg.accepted.connect(handle_saved)
         except Exception as e:
@@ -335,6 +352,93 @@ class MainWindow(QMainWindow):
             return
 
         QMessageBox.information(self, "Archiviert", f"{tid} wurde ins Archiv verschoben.")
+        self.build_project_filters()
+        self.reload_tasks_views()
+        
+    def build_project_filters(self):
+        """Erzeugt/aktualisiert die Projekt-Checkboxen oberhalb der Task-Tabelle."""
+        # Projekte aus YAMLs sammeln
+        projects = sorted({(t.get("projekt") or "") for t in load_tasks_active()})
+
+        # Platzhalter-Container im UI suchen; wenn nicht vorhanden, oben in pageTasks anlegen
+        container = self.root.findChild(QWidget, "panelTaskFilters")
+        if container is None:
+            container = QWidget(self.pageTasks)
+            container.setObjectName("panelTaskFilters")
+            # sicherstellen, dass pageTasks ein Layout hat
+            lay = self.pageTasks.layout()
+            if lay is None:
+                lay = QVBoxLayout(self.pageTasks)
+            # Container ganz oben einsetzen (über der Tabelle)
+            lay.insertWidget(0, container)
+
+        # Layout im Container vorbereiten/aufräumen
+        layout = container.layout()
+        if layout is None:
+            layout = QHBoxLayout(container)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(8)
+        else:
+            # alte Widgets entfernen
+            while layout.count():
+                item = layout.takeAt(0)
+                w = item.widget()
+                if w:
+                    w.setParent(None)
+
+        # "Alle" Checkbox
+        self._project_checks.clear()
+        self._cbAll = QCheckBox("Alle", container)
+        self._cbAll.setChecked(True)
+
+        def on_toggle_all_clicked():
+            # wenn NICHT alle an sind -> alle AN, sonst alle AUS
+            all_on = all(cb.isChecked() for cb in self._project_checks.values())
+            target = not all_on
+            for cb in self._project_checks.values():
+                cb.blockSignals(True)
+                cb.setChecked(target)
+                cb.blockSignals(False)
+            self.on_filter_changed()
+
+        self._cbAll.clicked.connect(on_toggle_all_clicked)
+        layout.addWidget(self._cbAll)
+
+        # Einzel-Projekt-Checkboxen
+        for p in projects:
+            label = p if p else "(ohne Projekt)"
+            cb = QCheckBox(label, container)
+            cb.setChecked(True)
+            # wichtig: Wert binden!
+            cb.stateChanged.connect(lambda _s, value=p: self.on_single_project_changed(value))
+            layout.addWidget(cb)
+            self._project_checks[p] = cb
+
+        layout.addStretch()
+
+        # initial: alle aktiv
+        self._project_filter_active = set(projects)
+
+    def on_single_project_changed(self, project_value: str):
+        # Status der „Alle“-Checkbox synchronisieren und neu laden
+        self.on_filter_changed()
+
+    def on_filter_changed(self):
+        # aktive Menge auslesen
+        active: set[str] = set()
+        for value, cb in self._project_checks.items():
+            if cb.isChecked():
+                active.add(value)
+        self._project_filter_active = active
+
+        # „Alle“-Checkbox setzen, ohne Re-Signal
+        if self._cbAll:
+            all_on = len(active) == len(self._project_checks)
+            self._cbAll.blockSignals(True)
+            self._cbAll.setChecked(all_on)
+            self._cbAll.blockSignals(False)
+
+        # Tabelle neu füllen
         self.reload_tasks_views()
 
 
