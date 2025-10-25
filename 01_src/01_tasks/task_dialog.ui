@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TaskDialog</class>
+ <widget class="QDialog" name="TaskDialog">
+  <property name="windowTitle"><string>Neue Aufgabe</string></property>
+  <layout class="QVBoxLayout" name="vbox_outer">
+   <property name="spacing"><number>8</number></property>
+   <property name="contentsMargins"><rect><x>12</x><y>12</y><width>12</width><height>12</height></rect></property>
+
+   <item>
+    <widget class="QWidget" name="form_host">
+     <layout class="QFormLayout" name="form">
+      <property name="labelAlignment"><set>Qt::AlignRight|Qt::AlignVCenter</set></property>
+
+      <item row="0" column="0"><widget class="QLabel" name="lblProjekt"><property name="text"><string>Projekt</string></property></widget></item>
+      <item row="0" column="1"><widget class="QLineEdit" name="leProjekt"/></item>
+
+      <item row="1" column="0"><widget class="QLabel" name="lblBeschreibung"><property name="text"><string>Beschreibung</string></property></widget></item>
+      <item row="1" column="1"><widget class="QTextEdit" name="teBeschreibung"/></item>
+
+      <item row="2" column="0"><widget class="QLabel" name="lblDokNr"><property name="text"><string>Dokument-Nr.</string></property></widget></item>
+      <item row="2" column="1"><widget class="QLineEdit" name="leDokNr"/></item>
+
+      <item row="3" column="0"><widget class="QLabel" name="lblDokName"><property name="text"><string>Dokument-Name</string></property></widget></item>
+      <item row="3" column="1"><widget class="QLineEdit" name="leDokName"/></item>
+
+      <item row="4" column="0"><widget class="QLabel" name="lblAuftrag"><property name="text"><string>Auftrag erhalten</string></property></widget></item>
+      <item row="4" column="1"><widget class="QDateEdit" name="deAuftrag"><property name="calendarPopup"><bool>true</bool></property><property name="displayFormat"><string>yyyy-MM-dd</string></property></widget></item>
+
+      <item row="5" column="0"><widget class="QLabel" name="lblFaellig"><property name="text"><string>Fällig bis</string></property></widget></item>
+      <item row="5" column="1"><widget class="QDateEdit" name="deFaellig"><property name="calendarPopup"><bool>true</bool></property><property name="displayFormat"><string>yyyy-MM-dd</string></property></widget></item>
+
+      <item row="6" column="0"><widget class="QLabel" name="lblStatus"><property name="text"><string>Status</string></property></widget></item>
+      <item row="6" column="1"><widget class="QComboBox" name="cbStatus"/></item>
+
+      <item row="7" column="0"><widget class="QLabel" name="lblPrio"><property name="text"><string>Dringlichkeit (0–4)</string></property></widget></item>
+      <item row="7" column="1"><widget class="QSpinBox" name="sbPrio"><property name="minimum"><number>0</number></property><property name="maximum"><number>4</number></property><property name="value"><number>2</number></property></widget></item>
+
+      <item row="8" column="0"><widget class="QLabel" name="lblNotizen"><property name="text"><string>Notizen</string></property></widget></item>
+      <item row="8" column="1"><widget class="QTextEdit" name="teNotizen"/></item>
+
+      <item row="9" column="0"><widget class="QLabel" name="lblFollow"><property name="text"><string>Follow-up</string></property></widget></item>
+      <item row="9" column="1"><widget class="QTextEdit" name="teFollow"/></item>
+     </layout>
+    </widget>
+   </item>
+
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons"><set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set></property>
+    </widget>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

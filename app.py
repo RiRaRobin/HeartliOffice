@@ -8,7 +8,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, Qt
-from PySide6.QtWidgets import QHeaderView, QTableWidget
+from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox
+from src.tasks.task_dialog import TaskDialog # type: ignore
 
 ROOT = Path(__file__).resolve().parent
 UI_FILE = ROOT / "ui" / "main_window.ui"
@@ -37,6 +38,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(loaded.centralwidget)
 
         self.root: QWidget = self.centralWidget()  # <— Root-Widget merken
+        self.btnTaskNew = self.root.findChild(QPushButton, "btnTaskNew")
+        if self.btnTaskNew:
+            self.btnTaskNew.clicked.connect(self.on_task_new)
+
 
         # Splitter konfigurieren usw.
         splitter: QSplitter = self.root.findChild(QSplitter, "body_splitter")
@@ -133,6 +138,14 @@ class MainWindow(QMainWindow):
             tm.setColumnWidth(4, 100)
             tm.setColumnWidth(5, 90)
             # 6 (Notizen) streckt sich automatisch
+            
+    def on_task_new(self):
+        dlg = TaskDialog(self)
+        if dlg.exec():
+            tid = dlg.created_id or "?"
+            QMessageBox.information(self, "Gespeichert", f"Neue Aufgabe erstellt: {tid}")
+            # TODO: Tabellen neu laden (Home & Tasks)
+
 
 
 if __name__ == "__main__":

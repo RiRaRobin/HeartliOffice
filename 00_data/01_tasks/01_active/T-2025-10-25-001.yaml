@@ -1,0 +1,13 @@
+id: T-2025-10-25-001
+beschreibung: Funktioniert das wirklich?
+projekt: test_P01
+dokument_nr: BU_1234567
+dokument_name: Test BU
+auftrag_erhalten: '2025-10-25'
+faellig_bis: '2025-10-30'
+weitere_dokumente: []
+notizen: "dies ist eine Notiz :)\n\tsogar tabs funktionieren!"
+follow_up: n/a
+status: OPEN
+dringlichkeit: 1
+verlinkte_fragen: []
