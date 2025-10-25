@@ -21,7 +21,7 @@ from datetime import date
 from typing import Any, Dict
 
 # Pfade & IO
-from path_config import DATA_TASKS_ACTIVE
+from path_config import DATA_TASKS_ACTIVE, DATA_TASKS_ARCHIVE
 from src.common.io_yaml import write_yaml, read_yaml # type: ignore
 # from dateutil.parser import parse as parse_date
 
@@ -134,3 +134,16 @@ def save_existing_task(task_id: str, data: Dict[str, Any]) -> str:
     }
     write_yaml(_task_file(task_id), payload)
     return task_id
+
+def archive_task(task_id: str) -> None:
+    """Verschiebt eine Task-YAML von active → archive. Überschreibt ggf. vorhandene gleichnamige Datei."""
+    src = _task_file(task_id)
+    if not src.exists():
+        raise FileNotFoundError(f"Task {task_id} nicht gefunden: {src}")
+
+    DATA_TASKS_ARCHIVE.mkdir(parents=True, exist_ok=True)
+    dst = DATA_TASKS_ARCHIVE / f"{task_id}.yaml"
+
+    # Falls im Archiv bereits vorhanden: überschreiben (oder hier alternative Logik einbauen)
+    dst.write_bytes(src.read_bytes())
+    src.unlink()

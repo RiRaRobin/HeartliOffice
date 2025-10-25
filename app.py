@@ -12,7 +12,7 @@ from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidg
 from PySide6.QtGui import QColor, QBrush
 from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
-from src.tasks.tasks_service import load_tasks_active, load_task # type: ignore
+from src.tasks.tasks_service import load_tasks_active, load_task, archive_task # type: ignore
 
 ROOT = Path(__file__).resolve().parent
 UI_FILE = ROOT / "ui" / "main_window.ui"
@@ -83,6 +83,11 @@ class MainWindow(QMainWindow):
         if table:
             table.itemDoubleClicked.connect(lambda _item: self.on_task_edit())
 
+        # Button Archive
+        self.btnTaskArchive = self.root.findChild(QPushButton, "btnTaskArchive")
+        if self.btnTaskArchive:
+            self.btnTaskArchive.clicked.connect(self.on_task_archive)
+        
         # Tabellen-Setup optional
         self.setup_tables()
 
@@ -294,6 +299,43 @@ class MainWindow(QMainWindow):
         def after_edit():
             self.reload_tasks_views()
         dlg.accepted.connect(after_edit)
+    
+    def _selected_task_id(self) -> str | None:
+        table = self.root.findChild(QTableWidget, "tableAllTasks")
+        if not table:
+            return None
+        sel = table.selectedItems()
+        if not sel:
+            return None
+        row = sel[0].row()
+        item = table.item(row, 0)  # Spalte 0 = ID
+        return item.text() if item else None
+    
+    def on_task_archive(self):
+        tid = self._selected_task_id()
+        if not tid:
+            QMessageBox.information(self, "Hinweis", "Bitte zuerst eine Aufgabe in der Liste auswählen.")
+            return
+
+        resp = QMessageBox.question(
+            self, "Archivieren",
+            f"Soll die Aufgabe {tid} ins Archiv verschoben werden?",
+            QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+        )
+        if resp != QMessageBox.Yes:
+            return
+
+        try:
+            archive_task(tid)
+        except FileNotFoundError:
+            QMessageBox.warning(self, "Fehler", f"Task-Datei zu {tid} wurde nicht gefunden.")
+            return
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler beim Archivieren", str(e))
+            return
+
+        QMessageBox.information(self, "Archiviert", f"{tid} wurde ins Archiv verschoben.")
+        self.reload_tasks_views()
 
 
 if __name__ == "__main__":
