@@ -76,6 +76,9 @@ class TaskDialog(QDialog):
         # Defaults
         if self.deAuftrag is not None:
             self.deAuftrag.setDate(QDate.currentDate())
+        if self.deFaellig is not None:
+            tomorrow = QDate.currentDate().addDays(1)
+            self.deFaellig.setDate(tomorrow)
         if self.cbStatus is not None:
             self.cbStatus.addItems(STATUS_VALUES)
         if self.sbPrio is not None:
