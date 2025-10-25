@@ -8,8 +8,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, Qt
-from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem, QAbstractItemView, QCheckBox, QHBoxLayout, QVBoxLayout, QScrollArea
-from PySide6.QtGui import QColor, QBrush
+from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem, QAbstractItemView, QCheckBox, QHBoxLayout, QVBoxLayout, QScrollArea, QLineEdit
+from PySide6.QtGui import QColor, QBrush, QShortcut, QKeySequence
 from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
 from src.tasks.tasks_service import load_tasks_active, load_task, archive_task # type: ignore
@@ -67,6 +67,16 @@ class MainWindow(QMainWindow):
         self.btnTasks: QPushButton     = self.root.findChild(QPushButton, "btnNavTasks")
         self.btnMeetings: QPushButton  = self.root.findChild(QPushButton, "btnNavMeetings")
         self.btnQuestions: QPushButton = self.root.findChild(QPushButton, "btnNavQuestions")
+        
+        self.leTaskSearch = self.root.findChild(QLineEdit, "leTaskSearch")
+        self.btnTaskApply = self.root.findChild(QPushButton, "btnTaskApply")
+
+        self._search_text = ""
+
+        if self.btnTaskApply:
+            self.btnTaskApply.clicked.connect(self.on_task_apply_search)
+        if self.leTaskSearch:
+            self.leTaskSearch.returnPressed.connect(self.on_task_apply_search)
 
         # Clicks verdrahten
         if self.btnHome:      self.btnHome.clicked.connect(lambda: self.show_page("Home"))
@@ -91,10 +101,30 @@ class MainWindow(QMainWindow):
         # Tabellen-Setup optional
         self.setup_tables()
         
+        # --- Suchfeld & Filter initialisieren ---
+        self.leTaskSearch = self.root.findChild(QLineEdit, "leTaskSearch")
+        self.btnTaskApply = self.root.findChild(QPushButton, "btnTaskApply")
+        self._search_text = ""
+
+        if self.btnTaskApply:
+            # Klick auf "Anwenden" löst Suche aus
+            self.btnTaskApply.clicked.connect(self.on_task_apply_search)
+
+        if self.leTaskSearch:
+            # Enter im Feld startet Suche
+            self.leTaskSearch.returnPressed.connect(self.on_task_apply_search)
+
+            # 🟢 Live-Search: Filtert während der Eingabe
+            self.leTaskSearch.textChanged.connect(lambda _:
+                setattr(self, "_search_text", self.leTaskSearch.text().strip()) or self.reload_tasks_views()
+            )
+        
         # --- Projekt-Filter State
         self._project_checks: dict[str, QCheckBox] = {}
         self._cbAll: QCheckBox | None = None
         self._project_filter_active: set[str] | None = None  # None = kein Filter (alles zeigen)
+        
+        self._search_text: str = ""
 
         # Filter-UI bauen (aus den vorhandenen YAMLs)
         self.build_project_filters()
@@ -107,18 +137,114 @@ class MainWindow(QMainWindow):
         
         self.show_page("Home")
         self.reload_tasks_views()
+        
+        # --- Tastatur-Shortcuts ---
+        self.tableAll = self.root.findChild(QTableWidget, "tableAllTasks")
+
+        self._shortcuts = [
+            QShortcut(QKeySequence("Ctrl+N"), self, activated=self.on_task_new),
+            QShortcut(QKeySequence("Delete"), self, activated=self.on_task_archive),
+            QShortcut(QKeySequence("Ctrl+R"), self, activated=self.reset_task_filters),
+            QShortcut(QKeySequence("Ctrl+F"), self,
+                    activated=lambda: (self.leTaskSearch.setFocus() if self.leTaskSearch else None)),
+        ]
+        # Enter nur auf der Tabelle aktivieren
+        if self.tableAll:
+            self._sc_enter = QShortcut(QKeySequence("Return"), self.tableAll, activated=self.on_task_edit)
 
 
     # ----------------------------------------------------------
     #   Alle Tasks in Tabelle anzeigen
     # ----------------------------------------------------------
+    def _current_rows(self) -> list[dict]:
+        """Lädt aktive Tasks und wendet Projekt- und Textfilter an."""
+        rows = load_tasks_active()
+
+        # Projektfilter
+        if getattr(self, "_project_filter_active", None) is not None:
+            rows = [r for r in rows if (r.get("projekt") or "") in self._project_filter_active]
+
+        # Textsuche (case-insensitive)
+        q = (getattr(self, "_search_text", "") or "").strip().lower()
+        if q:
+            def norm(x): return (str(x) if x is not None else "").lower()
+            KEYS = ("id", "beschreibung", "projekt", "status", "notizen", "follow_up")
+            rows = [t for t in rows if any(q in norm(t.get(k, "")) for k in KEYS)]
+
+        return rows
+    
     def reload_tasks_views(self):
         """Füllt die Tasks-Tabelle neu (Alle Tasks)."""
         table = self.root.findChild(QTableWidget, "tableAllTasks")
         if not table:
             return
 
-        rows = load_tasks_active()
+        rows = self._current_rows()
+        
+        # --- Projekt-Filter anwenden ---
+        if self._project_filter_active is not None:
+            rows = [
+                r for r in rows
+                if (r.get("projekt") or "") in self._project_filter_active
+            ]
+
+        # --- Textsuche anwenden ---
+        q = (self._search_text or "").lower()
+        if q:
+            def match(t: dict) -> bool:
+                return any(
+                    q in (str(t.get(k, "")) or "").lower()
+                    for k in ("beschreibung", "projekt", "status", "notizen", "follow_up", "id")
+                )
+            rows = [t for t in rows if match(t)]
+        
+        # ---------- "Heute fällig" unten füllen ----------
+        table_today = self.root.findChild(QTableWidget, "tableDueToday")
+        if table_today:
+            # Filtere die gleichen rows auf Fälligkeit == heute
+            today = date.today()
+            def parse_date(s: str):
+                try:
+                    return datetime.strptime(s, "%Y-%m-%d").date()
+                except Exception:
+                    return None
+            today = date.today()
+            due_today = [t for t in rows if parse_date(str(t.get("faellig_bis","")).strip()) == today]
+
+            due_today = []
+            today = date.today()
+            for t in rows:  # ← gefilterte rows
+                fb = str(t.get("faellig_bis", "")).strip()
+                try:
+                    d = datetime.strptime(fb, "%Y-%m-%d").date()
+                except Exception:
+                    d = None
+                if d == today:
+                    due_today.append(t)
+
+            table_today.setSortingEnabled(False)
+            table_today.clearContents()
+            table_today.setRowCount(len(due_today))
+
+            for r, t in enumerate(due_today):
+                items = [
+                    QTableWidgetItem(t.get("id","")),
+                    QTableWidgetItem(t.get("beschreibung","")),
+                    QTableWidgetItem(t.get("projekt","")),
+                    QTableWidgetItem(t.get("status","")),
+                    QTableWidgetItem(str(t.get("dringlichkeit",""))),
+                    QTableWidgetItem(t.get("faellig_bis","")),
+                ]
+                # heute = rot
+                color = QColor("#ef4444")
+                for it in items:
+                    it.setFlags(it.flags() & ~Qt.ItemIsEditable)
+                    it.setForeground(QBrush(color))
+                for c, it in enumerate(items):
+                    table_today.setItem(r, c, it)
+
+            table_today.setSortingEnabled(True)
+            table_today.sortItems(0, Qt.AscendingOrder)
         
         # ▼▼ Projektsicht filtern, wenn aktiv ▼▼
         if self._project_filter_active is not None:
@@ -440,6 +566,50 @@ class MainWindow(QMainWindow):
 
         # Tabelle neu füllen
         self.reload_tasks_views()
+        
+    def on_task_apply_search(self):
+        self._search_text = (self.leTaskSearch.text().strip() if self.leTaskSearch else "")
+        # optional: beim Suchen direkt auf Tasks-Ansicht springen
+        self.show_page("Tasks")
+        self.reload_tasks_views()
+        
+    def reset_task_filters(self):
+        """Setzt Suche + Projektfilter zurück und lädt Tabelle neu."""
+        # Suche leeren
+        self._search_text = ""
+        if self.leTaskSearch:
+            self.leTaskSearch.clear()
+
+        # Alle Projekte aktivieren
+        if hasattr(self, "_project_checks"):
+            for cb in self._project_checks.values():
+                cb.blockSignals(True)
+                cb.setChecked(True)
+                cb.blockSignals(False)
+            self._project_filter_active = set(self._project_checks.keys())
+
+        if hasattr(self, "_cbAll") and self._cbAll:
+            self._cbAll.blockSignals(True)
+            self._cbAll.setChecked(True)
+            self._cbAll.blockSignals(False)
+
+        self.reload_tasks_views()
+        
+    def _current_rows(self) -> list[dict]:
+        rows = load_tasks_active()
+
+        # Projekt-Filter
+        if self._project_filter_active is not None:
+            rows = [r for r in rows if (r.get("projekt") or "") in self._project_filter_active]
+
+        # Textsuche
+        q = (self._search_text or "").strip().lower()
+        if q:
+            def norm(x): return (str(x) if x is not None else "").lower()
+            KEYS = ("id", "beschreibung", "projekt", "status", "notizen", "follow_up")
+            rows = [t for t in rows if any(q in norm(t.get(k, "")) for k in KEYS)]
+
+        return rows
 
 
 if __name__ == "__main__":
