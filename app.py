@@ -8,8 +8,9 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, Qt
-from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox
+from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem
 from src.tasks.task_dialog import TaskDialog # type: ignore
+from src.tasks.tasks_service import load_tasks_active # type: ignore
 
 ROOT = Path(__file__).resolve().parent
 UI_FILE = ROOT / "ui" / "main_window.ui"
@@ -79,9 +80,45 @@ class MainWindow(QMainWindow):
             QPushButton[active="true"] { background: #1f2937; color: #e5e7eb; border-radius: 8px; }
             QPushButton:hover { background: #111827; }
         """)
-
-        # Startseite
+        
         self.show_page("Home")
+        self.reload_tasks_views()
+
+
+    # ----------------------------------------------------------
+    #   Alle Tasks in Tabelle anzeigen
+    # ----------------------------------------------------------
+    def reload_tasks_views(self):
+        """Füllt die Tasks-Tabelle neu (Alle Tasks)."""
+        table = self.root.findChild(QTableWidget, "tableAllTasks")
+        if not table:
+            return
+
+        rows = load_tasks_active()
+
+        # Spalten: 0 ID | 1 Beschreibung | 2 Projekt | 3 Status | 4 Prio | 5 Fällig
+        table.setSortingEnabled(False)
+        table.clearContents()
+        table.setRowCount(len(rows))
+
+        for r, t in enumerate(rows):
+            items = [
+                QTableWidgetItem(t.get("id","")),
+                QTableWidgetItem(t.get("beschreibung","")),
+                QTableWidgetItem(t.get("projekt","")),
+                QTableWidgetItem(t.get("status","")),
+                QTableWidgetItem(str(t.get("dringlichkeit",""))),
+                QTableWidgetItem(t.get("faellig_bis","")),
+            ]
+            for c, it in enumerate(items):
+                # nicht editierbar
+                it.setFlags(it.flags() & ~Qt.ItemIsEditable)
+                table.setItem(r, c, it)
+
+        table.setSortingEnabled(True)
+        # Standard: nach ID aufsteigend (älteste zuerst)
+        table.sortItems(0, Qt.AscendingOrder)
+
 
     def show_page(self, name: str):
         mapping = {
@@ -125,7 +162,40 @@ class MainWindow(QMainWindow):
         config_table("tableDueToday", stretch_last=True)
 
         # Tasks: volle Liste
-        config_table("tableAllTasks", stretch_last=True)
+        # Tasks: volle Liste
+        tt = config_table("tableAllTasks", stretch_last=False)   # <- NICHT die letzte Spalte stretchen
+        if tt:
+            h = tt.horizontalHeader()
+
+            DESC_MIN = 320  # Mindestbreite für "Beschreibung"
+            self._tasks_desc_min = DESC_MIN
+
+            # Basis-Resizemodi: alles interaktiv …
+            h.setSectionResizeMode(QHeaderView.Interactive)
+
+            # … aber: "Beschreibung" soll strecken (nimmt den Restplatz)
+            h.setSectionResizeMode(1, QHeaderView.Stretch)
+
+            # "Prio" soll klein und fix sein
+            h.setSectionResizeMode(4, QHeaderView.Fixed)
+            tt.setColumnWidth(4, 56)
+
+            # Initiale Breiten (werden als Start gesetzt)
+            tt.setColumnWidth(0, 120)  # ID
+            tt.setColumnWidth(2, 180)  # Projekt
+            tt.setColumnWidth(3, 90)  # Status
+            tt.setColumnWidth(4, 25)    # Prio
+            tt.setColumnWidth(5, 100)  # Fällig
+
+            # Anfangs-Mindestbreite für Beschreibung sicherstellen
+            if tt.columnWidth(1) < DESC_MIN:
+                h.resizeSection(1, DESC_MIN)
+
+            # Event-Filter installieren, damit "Beschreibung" auch nach Resizes min. so groß bleibt
+            if not hasattr(self, "_tasks_table"):
+                self._tasks_table = tt
+                tt.installEventFilter(self)
+
 
         # Meetings: Titel-Spalte breiter, letzte (Notizen) flexibel
         tm = config_table("tableMeetings", stretch_last=True)
@@ -140,15 +210,33 @@ class MainWindow(QMainWindow):
             # 6 (Notizen) streckt sich automatisch
             
     def on_task_new(self):
+        from src.tasks.task_dialog import TaskDialog  # type: ignore
+        from PySide6.QtWidgets import QMessageBox
+
         dlg = TaskDialog(self)
         dlg.show()  # nicht-modal öffnen
 
-        # optional: Callback bei erfolgreichem Speichern
         def handle_saved():
             if dlg.created_id:
                 QMessageBox.information(self, "Gespeichert", f"Neue Aufgabe erstellt: {dlg.created_id}")
-                # TODO: Tabellen neu laden
+                self.reload_tasks_views()  # <- Tabelle neu laden
+
         dlg.accepted.connect(handle_saved)
+
+    def eventFilter(self, obj, event):
+        # Mindestbreite der "Beschreibung"-Spalte in tableAllTasks durchsetzen
+        try:
+            from PySide6.QtCore import QEvent
+            if obj is getattr(self, "_tasks_table", None) and event.type() == QEvent.Resize:
+                tt = self._tasks_table
+                h = tt.horizontalHeader()
+                desc_idx = 1
+                min_w = getattr(self, "_tasks_desc_min", 320)
+                if tt.columnWidth(desc_idx) < min_w:
+                    h.resizeSection(desc_idx, min_w)
+        except Exception:
+            pass
+        return super().eventFilter(obj, event)
 
 
 

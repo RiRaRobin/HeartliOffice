@@ -22,7 +22,8 @@ from typing import Any, Dict
 
 # Pfade & IO
 from path_config import DATA_TASKS_ACTIVE
-from src.common.io_yaml import write_yaml # type: ignore
+from src.common.io_yaml import write_yaml, read_yaml # type: ignore
+# from dateutil.parser import parse as parse_date
 
 # ID-Generator (optional)
 try:
@@ -72,3 +73,26 @@ def save_new_task(data: Dict[str, Any]) -> str:
     }
     write_yaml(_task_file(task_id), payload)
     return task_id
+
+
+def _normalize_task(t: dict) -> dict:
+    return {
+        "id": t.get("id", ""),
+        "beschreibung": t.get("beschreibung", ""),
+        "projekt": t.get("projekt", ""),
+        "status": t.get("status", "OPEN"),
+        "dringlichkeit": int(t.get("dringlichkeit", 2) or 2),
+        "faellig_bis": t.get("faellig_bis", ""),
+    }
+
+def load_tasks_active() -> list[dict]:
+    DATA_TASKS_ACTIVE.mkdir(parents=True, exist_ok=True)  # <— Verzeichnis sicherstellen
+    rows: list[dict] = []
+    for f in sorted(DATA_TASKS_ACTIVE.glob("*.yaml")):
+        try:
+            t = read_yaml(f) or {}
+            rows.append(_normalize_task(t))
+        except Exception as e:
+            print(f"[WARN] Konnte {f.name} nicht laden: {e}")
+    rows.sort(key=lambda r: r.get("id", ""))
+    return rows
