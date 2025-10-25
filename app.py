@@ -141,10 +141,15 @@ class MainWindow(QMainWindow):
             
     def on_task_new(self):
         dlg = TaskDialog(self)
-        if dlg.exec():
-            tid = dlg.created_id or "?"
-            QMessageBox.information(self, "Gespeichert", f"Neue Aufgabe erstellt: {tid}")
-            # TODO: Tabellen neu laden (Home & Tasks)
+        dlg.show()  # nicht-modal öffnen
+
+        # optional: Callback bei erfolgreichem Speichern
+        def handle_saved():
+            if dlg.created_id:
+                QMessageBox.information(self, "Gespeichert", f"Neue Aufgabe erstellt: {dlg.created_id}")
+                # TODO: Tabellen neu laden
+        dlg.accepted.connect(handle_saved)
+
 
 
 
