@@ -22,11 +22,11 @@ from typing import Any, Dict
 
 # Pfade & IO
 from path_config import DATA_TASKS_ACTIVE
-from src.common.io_yaml import write_yaml
+from src.common.io_yaml import write_yaml # type: ignore
 
 # ID-Generator (optional)
 try:
-    from src.common.ids import _next_running_number
+    from src.common.ids import _next_running_number # type: ignore
     USE_IDS = True
 except Exception:
     USE_IDS = False
