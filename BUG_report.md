@@ -19,6 +19,7 @@ M-0003  Fenster für Dokumente und Links
 M-0004  Unterscheidung eigene Termine und fixe Termine
 M-0005  README
 M-0006  Logos Einfügen und Titel anpassen
+M-0007  Testprogramm schreiben
 
 
 FEATURE
