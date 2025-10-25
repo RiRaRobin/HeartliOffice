@@ -8,6 +8,7 @@ Heartli_OfficeTool/
 ├── 📄 PROJEKTPLAN.md
 ├── 📑 PROJEKTPLAN.pdf
 ├── ℹ️ README.md
+├── 🐍 app.py
 ├── 📄 folder_structure.md
 ├── 📄 folder_structure_with_files.md
 ├── 🐍 path_config.py
@@ -52,4 +53,7 @@ Heartli_OfficeTool/
 │   │   🐍 __init__.py
 │   ├── tasks/
 │   │   🐍 __init__.py
+
+├── ui/
+│   📄 main_window.ui
 ```
