@@ -8,11 +8,11 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, Qt
-from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem
+from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem, QAbstractItemView
 from PySide6.QtGui import QColor, QBrush
 from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
-from src.tasks.tasks_service import load_tasks_active # type: ignore
+from src.tasks.tasks_service import load_tasks_active, load_task # type: ignore
 
 ROOT = Path(__file__).resolve().parent
 UI_FILE = ROOT / "ui" / "main_window.ui"
@@ -73,6 +73,15 @@ class MainWindow(QMainWindow):
         if self.btnTasks:     self.btnTasks.clicked.connect(lambda: self.show_page("Tasks"))
         if self.btnMeetings:  self.btnMeetings.clicked.connect(lambda: self.show_page("Meetings"))
         if self.btnQuestions: self.btnQuestions.clicked.connect(lambda: self.show_page("Questions"))
+        
+        self.btnTaskEdit = self.root.findChild(QPushButton, "btnTaskEdit")
+        if self.btnTaskEdit:
+            self.btnTaskEdit.clicked.connect(self.on_task_edit)
+
+        # Doppelklick auf Zeile öffnet Bearbeiten
+        table = self.root.findChild(QTableWidget, "tableAllTasks")
+        if table:
+            table.itemDoubleClicked.connect(lambda _item: self.on_task_edit())
 
         # Tabellen-Setup optional
         self.setup_tables()
@@ -172,76 +181,76 @@ class MainWindow(QMainWindow):
             if not t:
                 return None
             h: QHeaderView = t.horizontalHeader()
-            h.setSectionResizeMode(QHeaderView.Interactive)  # manuell verschiebbar
+            h.setSectionResizeMode(QHeaderView.Interactive)
             if stretch_last:
                 h.setStretchLastSection(True)
             t.setWordWrap(False)
             return t
 
-        # Home: "Heute fällig"
+        # Home
         config_table("tableDueToday", stretch_last=True)
 
-        # Tasks: volle Liste
-        # Tasks: volle Liste
-        tt = config_table("tableAllTasks", stretch_last=False)   # <- NICHT die letzte Spalte stretchen
+        # Tasks – volle Liste
+        tt = config_table("tableAllTasks", stretch_last=False)   # nicht die letzte Spalte stretchen
         if tt:
+            # Auswahl: ganze Zeile, Single
+            tt.setSelectionBehavior(QAbstractItemView.SelectRows)
+            tt.setSelectionMode(QAbstractItemView.SingleSelection)
+
             h = tt.horizontalHeader()
 
             DESC_MIN = 320  # Mindestbreite für "Beschreibung"
             self._tasks_desc_min = DESC_MIN
 
-            # Basis-Resizemodi: alles interaktiv …
+            # Basis: interaktiv …
             h.setSectionResizeMode(QHeaderView.Interactive)
 
-            # … aber: "Beschreibung" soll strecken (nimmt den Restplatz)
+            # … aber "Beschreibung" (Spalte 1) streckt den Restplatz
             h.setSectionResizeMode(1, QHeaderView.Stretch)
 
-            # "Prio" soll klein und fix sein
+            # "Prio" (Spalte 4) klein & fix
             h.setSectionResizeMode(4, QHeaderView.Fixed)
-            tt.setColumnWidth(4, 56)
+            tt.setColumnWidth(4, 56)   # ← wähle EINEN Wert; 25 war zu klein
 
-            # Initiale Breiten (werden als Start gesetzt)
+            # Initiale Breiten
             tt.setColumnWidth(0, 120)  # ID
             tt.setColumnWidth(2, 180)  # Projekt
-            tt.setColumnWidth(3, 90)  # Status
-            tt.setColumnWidth(4, 25)    # Prio
+            tt.setColumnWidth(3, 90)   # Status
             tt.setColumnWidth(5, 100)  # Fällig
 
-            # Anfangs-Mindestbreite für Beschreibung sicherstellen
+            # Mindestbreite Beschreibung sicherstellen
             if tt.columnWidth(1) < DESC_MIN:
                 h.resizeSection(1, DESC_MIN)
 
-            # Event-Filter installieren, damit "Beschreibung" auch nach Resizes min. so groß bleibt
+            # Event-Filter für Mindestbreite
             if not hasattr(self, "_tasks_table"):
                 self._tasks_table = tt
                 tt.installEventFilter(self)
 
-
-        # Meetings: Titel-Spalte breiter, letzte (Notizen) flexibel
+        # Meetings
         tm = config_table("tableMeetings", stretch_last=True)
         if tm:
-            # Indexe: 0 Datum, 1 Zeit, 2 Titel, 3 Projekt, 4 Ort, 5 Aufgaben#, 6 Notizen
             tm.setColumnWidth(0, 90)
             tm.setColumnWidth(1, 80)
-            tm.setColumnWidth(2, 260)  # Titel breiter
+            tm.setColumnWidth(2, 260)
             tm.setColumnWidth(3, 120)
             tm.setColumnWidth(4, 100)
             tm.setColumnWidth(5, 90)
-            # 6 (Notizen) streckt sich automatisch
+
             
     def on_task_new(self):
-        from src.tasks.task_dialog import TaskDialog  # type: ignore
         from PySide6.QtWidgets import QMessageBox
-
-        dlg = TaskDialog(self)
-        dlg.show()  # nicht-modal öffnen
-
-        def handle_saved():
-            if dlg.created_id:
-                QMessageBox.information(self, "Gespeichert", f"Neue Aufgabe erstellt: {dlg.created_id}")
-                self.reload_tasks_views()  # <- Tabelle neu laden
-
-        dlg.accepted.connect(handle_saved)
+        try:
+            from src.tasks.task_dialog import TaskDialog  # type: ignore
+            dlg = TaskDialog(self)        # create mode
+            dlg.show()                    # nicht-modal
+            def handle_saved():
+                if dlg.created_id:
+                    QMessageBox.information(self, "Gespeichert", f"Neue Aufgabe erstellt: {dlg.created_id}")
+                    self.reload_tasks_views()
+            dlg.accepted.connect(handle_saved)
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler beim Öffnen", str(e))
 
     def eventFilter(self, obj, event):
         # Mindestbreite der "Beschreibung"-Spalte in tableAllTasks durchsetzen
@@ -258,7 +267,33 @@ class MainWindow(QMainWindow):
             pass
         return super().eventFilter(obj, event)
 
+    def _selected_task_id(self) -> str | None:
+        table = self.root.findChild(QTableWidget, "tableAllTasks")
+        if not table:
+            return None
+        sel = table.selectedItems()
+        if not sel:
+            return None
+        row = sel[0].row()
+        item = table.item(row, 0)  # Spalte 0 = ID
+        return item.text() if item else None
 
+    def on_task_edit(self):
+        tid = self._selected_task_id()
+        if not tid:
+            QMessageBox.warning(self, "Hinweis", "Bitte zuerst eine Aufgabe auswählen.")
+            return
+        try:
+            t = load_task(tid)
+        except FileNotFoundError:
+            QMessageBox.warning(self, "Fehler", f"Task-Datei zu {tid} nicht gefunden.")
+            return
+
+        dlg = TaskDialog(self, mode="edit", task=t)
+        dlg.show()  # nicht-modal
+        def after_edit():
+            self.reload_tasks_views()
+        dlg.accepted.connect(after_edit)
 
 
 if __name__ == "__main__":

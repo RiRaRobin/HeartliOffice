@@ -106,3 +106,31 @@ def load_tasks_active() -> list[dict]:
             print(f"[WARN] Konnte {f.name} nicht laden: {e}")
     rows.sort(key=lambda r: r.get("id", ""))
     return rows
+
+def load_task(task_id: str) -> dict:
+    """Einzelnen Task laden (normalisiert)."""
+    p = _task_file(task_id)
+    if not p.exists():
+        raise FileNotFoundError(task_id)
+    t = read_yaml(p) or {}
+    return _normalize_task(t)
+
+def save_existing_task(task_id: str, data: Dict[str, Any]) -> str:
+    """Bestehenden Task (selbe ID) überschreiben/aktualisieren."""
+    payload = {
+        "id": task_id,
+        "beschreibung": (data.get("beschreibung","") or "").strip(),
+        "projekt": (data.get("projekt","") or "").strip(),
+        "dokument_nr": (data.get("dokument_nr","") or "").strip(),
+        "dokument_name": (data.get("dokument_name","") or "").strip(),
+        "auftrag_erhalten": (data.get("auftrag_erhalten","") or "").strip(),
+        "faellig_bis": (data.get("faellig_bis","") or "").strip(),
+        "weitere_dokumente": data.get("weitere_dokumente", []) or [],
+        "notizen": data.get("notizen","") or "",
+        "follow_up": data.get("follow_up","") or "",
+        "status": data.get("status","OPEN") or "OPEN",
+        "dringlichkeit": _int_or_default(data.get("dringlichkeit"), 2),
+        "verlinkte_fragen": data.get("verlinkte_fragen", []) or [],
+    }
+    write_yaml(_task_file(task_id), payload)
+    return task_id

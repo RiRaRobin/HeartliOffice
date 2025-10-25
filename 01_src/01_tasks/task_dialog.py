@@ -19,51 +19,58 @@ from PySide6.QtWidgets import (
     QDialogButtonBox, QVBoxLayout
 )
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtCore import QFile, QDate
+from PySide6.QtCore import QFile, QDate  # QDate GLOBAL importieren!
 
-from src.tasks.tasks_service import save_new_task, STATUS_VALUES, PRIO_VALUES  # type: ignore
+from src.tasks.tasks_service import ( # type: ignore
+    save_new_task, save_existing_task, STATUS_VALUES, PRIO_VALUES
+)  # type: ignore
 
 
 class TaskDialog(QDialog):
-    """Dialog zum Erfassen einer neuen Aufgabe. Nach accept(): self.created_id enthält die neue ID."""
-    def __init__(self, parent=None):
+    """Dialog zum Erfassen oder Bearbeiten einer Aufgabe.
+       mode: "create" | "edit"
+       task: dict mit Feldern wie in YAML (nur für edit)
+    """
+    def __init__(self, parent=None, mode: str = "create", task: dict | None = None):
         super().__init__(parent)
+        self.mode = mode
+        self.edit_id: str | None = (task or {}).get("id")
+        self.created_id: str | None = None
 
-        # UI laden (du hast task_dialog.ui direkt in 01_src/01_tasks/ abgelegt)
+        # --- UI laden (du hast task_dialog.ui direkt im Ordner 01_src/01_tasks/)
         ui_path = _ROOT / "01_src" / "01_tasks" / "task_dialog.ui"
         loader = QUiLoader()
         f = QFile(str(ui_path))
         if not f.open(QFile.ReadOnly):
             raise RuntimeError(f"Kann UI nicht öffnen: {ui_path}")
         try:
-            self._root = loader.load(f, None)   # Top-Level-Widget aus .ui
+            root = loader.load(f, None)  # Top-Level-Widget aus .ui
         finally:
             f.close()
-        if self._root is None:
+        if root is None:
             raise RuntimeError("Konnte task_dialog.ui nicht laden")
 
-        # Geladenes UI in diesen QDialog einbetten → sichtbar machen
+        # In diesen QDialog einbetten → sichtbar
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        lay.addWidget(self._root)
+        lay.addWidget(root)
 
-        self.setWindowTitle("Neue Aufgabe")
-        self.created_id: str | None = None
+        self.setWindowTitle("Neue Aufgabe" if self.mode == "create" else "Aufgabe bearbeiten")
 
-        # Widgets vom geladenen Root holen (Namen müssen mit objectName im Designer übereinstimmen)
-        self.leProjekt: QLineEdit        = self._root.findChild(QLineEdit, "leProjekt")
-        self.teBeschreibung: QTextEdit   = self._root.findChild(QTextEdit, "teBeschreibung")
-        self.leDokNr: QLineEdit          = self._root.findChild(QLineEdit, "leDokNr")
-        self.leDokName: QLineEdit        = self._root.findChild(QLineEdit, "leDokName")
-        self.deAuftrag: QDateEdit        = self._root.findChild(QDateEdit, "deAuftrag")
-        self.deFaellig: QDateEdit        = self._root.findChild(QDateEdit, "deFaellig")
-        self.cbStatus: QComboBox         = self._root.findChild(QComboBox, "cbStatus")
-        self.sbPrio: QSpinBox            = self._root.findChild(QSpinBox, "sbPrio")
-        self.teNotizen: QTextEdit        = self._root.findChild(QTextEdit, "teNotizen")
-        self.teFollow: QTextEdit         = self._root.findChild(QTextEdit, "teFollow")
-        self.buttonBox: QDialogButtonBox = self._root.findChild(QDialogButtonBox, "buttonBox")
+        # Widgets binden (objectName muss zum .ui passen)
+        self.leProjekt: QLineEdit        = root.findChild(QLineEdit,   "leProjekt")
+        self.teBeschreibung: QTextEdit   = root.findChild(QTextEdit,   "teBeschreibung")
+        self.leDokNr: QLineEdit          = root.findChild(QLineEdit,   "leDokNr")
+        self.leDokName: QLineEdit        = root.findChild(QLineEdit,   "leDokName")
+        self.deAuftrag: QDateEdit        = root.findChild(QDateEdit,   "deAuftrag")
+        self.deFaellig: QDateEdit        = root.findChild(QDateEdit,   "deFaellig")
+        self.cbStatus: QComboBox         = root.findChild(QComboBox,   "cbStatus")
+        self.sbPrio: QSpinBox            = root.findChild(QSpinBox,    "sbPrio")
+        self.teNotizen: QTextEdit        = root.findChild(QTextEdit,   "teNotizen")
+        self.teFollow: QTextEdit         = root.findChild(QTextEdit,   "teFollow")
+        self.buttonBox: QDialogButtonBox = root.findChild(QDialogButtonBox, "buttonBox")
 
-        # Sanity-Check: wenn ein zentrales Widget None ist, früh scheitern (hilft beim Debugging der objectNames)
+        # Minimal-Checks (hilft, falls objectNames im .ui anders sind)
         for name, w in {
             "teBeschreibung": self.teBeschreibung,
             "cbStatus": self.cbStatus,
@@ -71,34 +78,76 @@ class TaskDialog(QDialog):
             "buttonBox": self.buttonBox,
         }.items():
             if w is None:
-                raise RuntimeError(f"Widget '{name}' nicht im UI gefunden (objectName prüfen).")
+                raise RuntimeError(f"Widget '{name}' nicht im UI gefunden (objectName im .ui prüfen).")
 
-        # Defaults
-        if self.deAuftrag is not None:
-            self.deAuftrag.setDate(QDate.currentDate())
-        if self.deFaellig is not None:
-            tomorrow = QDate.currentDate().addDays(1)
-            self.deFaellig.setDate(tomorrow)
-        if self.cbStatus is not None:
-            self.cbStatus.addItems(STATUS_VALUES)
-        if self.sbPrio is not None:
-            self.sbPrio.setRange(min(PRIO_VALUES), max(PRIO_VALUES))
-            self.sbPrio.setValue(2)
+        # --- Defaults (Create) oder Prefill (Edit)
+        if self.mode == "edit" and task:
+            # Strings
+            if self.leProjekt:      self.leProjekt.setText(task.get("projekt",""))
+            if self.teBeschreibung: self.teBeschreibung.setPlainText(task.get("beschreibung",""))
+            if self.leDokNr:        self.leDokNr.setText(task.get("dokument_nr",""))
+            if self.leDokName:      self.leDokName.setText(task.get("dokument_name",""))
+            if self.teNotizen:      self.teNotizen.setPlainText(task.get("notizen",""))
+            if self.teFollow:       self.teFollow.setPlainText(task.get("follow_up",""))
+
+            # Status/Prio
+            if self.cbStatus:
+                self.cbStatus.clear()
+                self.cbStatus.addItems(STATUS_VALUES)
+                cur = task.get("status","OPEN")
+                idx = self.cbStatus.findText(cur)
+                self.cbStatus.setCurrentIndex(max(idx, 0))
+            if self.sbPrio:
+                self.sbPrio.setRange(min(PRIO_VALUES), max(PRIO_VALUES))
+                try:
+                    self.sbPrio.setValue(int(task.get("dringlichkeit", 2)))
+                except Exception:
+                    self.sbPrio.setValue(2)
+
+            # Dates
+            if self.deAuftrag:
+                s = (task.get("auftrag_erhalten","") or "").strip()
+                if s:
+                    try:
+                        y,m,d = map(int, s.split("-"))
+                        self.deAuftrag.setDate(QDate(y,m,d))
+                    except Exception:
+                        pass
+            if self.deFaellig:
+                s = (task.get("faellig_bis","") or "").strip()
+                if s:
+                    try:
+                        y,m,d = map(int, s.split("-"))
+                        self.deFaellig.setDate(QDate(y,m,d))
+                    except Exception:
+                        pass
+        else:
+            # Create-Defaults
+            if self.deAuftrag is not None:
+                self.deAuftrag.setDate(QDate.currentDate())
+            if self.deFaellig is not None:
+                self.deFaellig.setDate(QDate.currentDate().addDays(1))
+            if self.cbStatus is not None:
+                self.cbStatus.clear()
+                self.cbStatus.addItems(STATUS_VALUES)
+            if self.sbPrio is not None:
+                self.sbPrio.setRange(min(PRIO_VALUES), max(PRIO_VALUES))
+                self.sbPrio.setValue(2)
 
         # Signals
         self.buttonBox.accepted.connect(self.on_save)
         self.buttonBox.rejected.connect(self.reject)
-        if self.leProjekt is not None:
+
+        # Fokus
+        if self.leProjekt:
             self.leProjekt.setFocus()
 
     # ----------------------------
     # Slot: Speichern gedrückt
     # ----------------------------
     def on_save(self) -> None:
-        """Liest die Felder aus, speichert via save_new_task und schließt mit accept()."""
         beschr = (self.teBeschreibung.toPlainText() if self.teBeschreibung else "").strip()
         if not beschr:
-            # Minimal-Validierung: Beschreibung ist Pflicht
             if self.teBeschreibung:
                 self.teBeschreibung.setFocus()
             return
@@ -116,6 +165,10 @@ class TaskDialog(QDialog):
             "follow_up": self.teFollow.toPlainText() if self.teFollow else "",
         }
 
-        tid = save_new_task(data)
+        if self.mode == "edit" and self.edit_id:
+            tid = save_existing_task(self.edit_id, data)
+        else:
+            tid = save_new_task(data)
+
         self.created_id = tid
         self.accept()
