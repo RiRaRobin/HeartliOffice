@@ -51,6 +51,16 @@ def generate_task_id(title_hint: str = "task") -> str:
     safe = "".join(c for c in title_hint if c.isalnum() or c in ("-","_")).strip() or "task"
     return f"T-{safe}"
 
+def _int_or_default(val, default=2) -> int:
+    if val is None:
+        return default
+    try:
+        s = str(val).strip()
+        if s == "":
+            return default
+        return int(s)
+    except Exception:
+        return default
 
 def save_new_task(data: Dict[str, Any]) -> str:
     """Erstellt eine neue Task-YAML. Gibt die ID zurück."""
@@ -68,7 +78,7 @@ def save_new_task(data: Dict[str, Any]) -> str:
         "notizen": data.get("notizen", ""),
         "follow_up": data.get("follow_up", ""),
         "status": data.get("status", "OPEN"),
-        "dringlichkeit": int(data.get("dringlichkeit", 2) or 2),
+        "dringlichkeit": _int_or_default(data.get("dringlichkeit"), 2),
         "verlinkte_fragen": data.get("verlinkte_fragen", []) or [],
     }
     write_yaml(_task_file(task_id), payload)
@@ -81,7 +91,7 @@ def _normalize_task(t: dict) -> dict:
         "beschreibung": t.get("beschreibung", ""),
         "projekt": t.get("projekt", ""),
         "status": t.get("status", "OPEN"),
-        "dringlichkeit": int(t.get("dringlichkeit", 2) or 2),
+        "dringlichkeit": _int_or_default(t.get("dringlichkeit"), 2),
         "faellig_bis": t.get("faellig_bis", ""),
     }
 
