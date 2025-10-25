@@ -90,9 +90,20 @@ def _normalize_task(t: dict) -> dict:
         "id": t.get("id", ""),
         "beschreibung": t.get("beschreibung", ""),
         "projekt": t.get("projekt", ""),
+
+        # 🔧 Wichtige Felder ergänzen:
+        "dokument_nr": t.get("dokument_nr", ""),
+        "dokument_name": t.get("dokument_name", ""),
+        "auftrag_erhalten": t.get("auftrag_erhalten", ""),  # <-- fehlte bisher
+        "faellig_bis": t.get("faellig_bis", ""),
+
+        "weitere_dokumente": t.get("weitere_dokumente", []) or [],
+        "notizen": t.get("notizen", ""),
+        "follow_up": t.get("follow_up", ""),
+
         "status": t.get("status", "OPEN"),
         "dringlichkeit": _int_or_default(t.get("dringlichkeit"), 2),
-        "faellig_bis": t.get("faellig_bis", ""),
+        "verlinkte_fragen": t.get("verlinkte_fragen", []) or [],
     }
 
 def load_tasks_active() -> list[dict]:

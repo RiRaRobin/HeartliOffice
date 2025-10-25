@@ -24,7 +24,23 @@ from PySide6.QtCore import QFile, QDate  # QDate GLOBAL importieren!
 from src.tasks.tasks_service import ( # type: ignore
     save_new_task, save_existing_task, STATUS_VALUES, PRIO_VALUES
 )  # type: ignore
+from datetime import datetime
 
+def _set_qdate_from_str(w: QDateEdit | None, s: str | None) -> None:
+    """Setzt ein QDateEdit robust aus 'YYYY-MM-DD' oder ISO-String; setzt NICHT auf heute, wenn leer/unparsebar."""
+    if not w:
+        return
+    s = (s or "").strip()
+    if not s:
+        return  # nichts setzen
+    qd = QDate.fromString(s, "yyyy-MM-dd")
+    if qd.isValid():
+        w.setDate(qd); return
+    try:
+        d = datetime.fromisoformat(s).date()
+        w.setDate(QDate(d.year, d.month, d.day))
+    except Exception:
+        pass  # nichts setzen, wichtiger als stillschweigend Defaults
 
 class TaskDialog(QDialog):
     """Dialog zum Erfassen oder Bearbeiten einer Aufgabe.
@@ -104,25 +120,13 @@ class TaskDialog(QDialog):
                 except Exception:
                     self.sbPrio.setValue(2)
 
-            # Dates
-            if self.deAuftrag:
-                s = (task.get("auftrag_erhalten","") or "").strip()
-                if s:
-                    try:
-                        y,m,d = map(int, s.split("-"))
-                        self.deAuftrag.setDate(QDate(y,m,d))
-                    except Exception:
-                        pass
-            if self.deFaellig:
-                s = (task.get("faellig_bis","") or "").strip()
-                if s:
-                    try:
-                        y,m,d = map(int, s.split("-"))
-                        self.deFaellig.setDate(QDate(y,m,d))
-                    except Exception:
-                        pass
+            # 🚫 WICHTIG: hier KEINE Defaults setzen
+            # Dates exakt aus YAML:
+            _set_qdate_from_str(self.deAuftrag, task.get("auftrag_erhalten"))
+            _set_qdate_from_str(self.deFaellig, task.get("faellig_bis"))
+
         else:
-            # Create-Defaults
+            # CREATE-Modus: hier dürfen Defaults gesetzt werden
             if self.deAuftrag is not None:
                 self.deAuftrag.setDate(QDate.currentDate())
             if self.deFaellig is not None:
