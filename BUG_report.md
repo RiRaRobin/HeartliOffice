@@ -17,6 +17,8 @@ M-0001  Funktion, wenn Task archivieren Status == DONE ?
 M-0002  Heute fällig ergänzen auch mit überfälligen tasks
 M-0003  Fenster für Dokumente und Links
 M-0004  Unterscheidung eigene Termine und fixe Termine
+M-0005  README
+M-0006  Logos Einfügen und Titel anpassen
 
 
 FEATURE
