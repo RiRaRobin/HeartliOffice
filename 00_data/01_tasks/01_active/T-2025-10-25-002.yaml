@@ -1,13 +1,13 @@
 id: T-2025-10-25-002
-beschreibung: "Test2\twnbefjin\n-2p13u912\"T/T/+\"*+=="
-projekt: test1
-dokument_nr: ''
-dokument_name: ''
+beschreibung: IHB Am 843 erstellen
+projekt: BLS Netz
+dokument_nr: BU_6591887
+dokument_name: IHB Am 843
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2025-10-26'
+faellig_bis: '2026-02-28'
 weitere_dokumente: []
-notizen: uhu patafix klebt fix
-follow_up: "Info von XY:\n\tich soll man pritt kleber prüfen"
+notizen: ''
+follow_up: ''
 status: OPEN
-dringlichkeit: 2
+dringlichkeit: 4
 verlinkte_fragen: []

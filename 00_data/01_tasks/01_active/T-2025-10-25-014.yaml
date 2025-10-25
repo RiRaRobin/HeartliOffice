@@ -1,13 +1,13 @@
-id: T-2025-10-25-009
-beschreibung: Review Korrekturen BLS-Review
+id: T-2025-10-25-014
+beschreibung: SRS Am 843
 projekt: BLS Netz
-dokument_nr: ''
-dokument_name: ''
+dokument_nr: BU_5490864
+dokument_name: SRS Am 843
 auftrag_erhalten: '2025-10-25'
 faellig_bis: '2025-10-31'
 weitere_dokumente: []
 notizen: ''
-follow_up: ''
-status: OPEN
+follow_up: Kommentare Reda offen
+status: READY
 dringlichkeit: 1
 verlinkte_fragen: []

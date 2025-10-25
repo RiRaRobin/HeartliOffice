@@ -1,8 +1,8 @@
-id: T-2025-10-25-009
-beschreibung: Review Korrekturen BLS-Review
+id: T-2025-10-25-015
+beschreibung: SRS Tm 235 CR
 projekt: BLS Netz
-dokument_nr: ''
-dokument_name: ''
+dokument_nr: BU_5414530
+dokument_name: SRS Tm 235
 auftrag_erhalten: '2025-10-25'
 faellig_bis: '2025-10-31'
 weitere_dokumente: []
