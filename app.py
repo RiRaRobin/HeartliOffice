@@ -9,6 +9,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, Qt
 from PySide6.QtWidgets import QHeaderView, QTableWidget, QMessageBox, QTableWidgetItem
+from PySide6.QtGui import QColor, QBrush
+from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
 from src.tasks.tasks_service import load_tasks_active # type: ignore
 
@@ -102,17 +104,35 @@ class MainWindow(QMainWindow):
         table.setRowCount(len(rows))
 
         for r, t in enumerate(rows):
+            faellig_raw = str(t.get("faellig_bis", "")).strip()
+            color = None
+
+            # Fälligkeit prüfen
+            if faellig_raw:
+                try:
+                    faellig = datetime.strptime(faellig_raw, "%Y-%m-%d").date()
+                    today = date.today()
+                    if faellig < today:
+                        color = QColor("#b91c1c")   # dunkelrot: überfällig
+                    elif faellig == today:
+                        color = QColor("#ef4444")   # rot: heute fällig
+                except Exception:
+                    pass
+
             items = [
                 QTableWidgetItem(t.get("id","")),
                 QTableWidgetItem(t.get("beschreibung","")),
                 QTableWidgetItem(t.get("projekt","")),
                 QTableWidgetItem(t.get("status","")),
                 QTableWidgetItem(str(t.get("dringlichkeit",""))),
-                QTableWidgetItem(t.get("faellig_bis","")),
+                QTableWidgetItem(faellig_raw),
             ]
+
             for c, it in enumerate(items):
-                # nicht editierbar
                 it.setFlags(it.flags() & ~Qt.ItemIsEditable)
+                # Farbe anwenden (alle Spalten einfärben)
+                if color:
+                    it.setForeground(QBrush(color))
                 table.setItem(r, c, it)
 
         table.setSortingEnabled(True)
