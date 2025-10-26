@@ -1,5 +1,6 @@
 BUGS
 B-0001  Suchfunktion in tasks etwas fragile
+B-0002  Alle Hauptsuchfelder sind unterschiedlich gross
 
 
 VERBESSERUNG
