@@ -662,11 +662,9 @@ class MainWindow(QMainWindow):
             return
         rows = load_questions_active()
 
-        # ▼▼ Personenfilter ▼▼
-        if self._q_filter_active is not None:
+        # Personenfilter (falls vorhanden)
+        if getattr(self, "_q_filter_active", None) is not None:
             rows = [r for r in rows if (r.get("person") or "") in self._q_filter_active]
-
-        self._q_rows = rows  # Reihenfolge für ID-Zugriff merken
 
         t.setSortingEnabled(False)
         t.clearContents()
@@ -679,8 +677,13 @@ class MainWindow(QMainWindow):
                 QTableWidgetItem(q.get("status","")),
                 QTableWidgetItem(q.get("typ","")),
             ]
-            for c, it in enumerate(items):
+            # ⬇️ WICHTIG: ID am Item hinterlegen (UserRole)
+            qid = q.get("id","")
+            for it in items:
+                it.setData(Qt.UserRole, qid)
                 it.setFlags(it.flags() & ~Qt.ItemIsEditable)
+
+            for c, it in enumerate(items):
                 t.setItem(r, c, it)
 
         t.setSortingEnabled(True)
@@ -688,13 +691,17 @@ class MainWindow(QMainWindow):
 
     def _q_selected_id(self) -> str | None:
         t = getattr(self, "tableQuestions", None)
-        if not t or not getattr(self, "_q_rows", None):
+        if not t:
             return None
-        sel = t.selectedItems()
-        if not sel:
+        row = t.currentRow()
+        if row < 0:
             return None
-        row = sel[0].row()
-        return self._q_rows[row].get("id")
+        # ID aus Spalte 0 (egal, welche Zelle/Spalte geklickt wurde)
+        it = t.item(row, 0)
+        if not it:
+            return None
+        qid = it.data(Qt.UserRole)
+        return str(qid) if qid else None
 
     def on_q_new(self):
         from PySide6.QtWidgets import QMessageBox
