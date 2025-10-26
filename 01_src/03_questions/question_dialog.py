@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
     QComboBox, QTextEdit, QLineEdit
 )
 
-from src.questions.questions_service import save_new_question, load_questions_active, TYPES
+from src.questions.questions_service import save_new_question, load_questions_active, TYPES # type: ignore
 
 class QuestionDialog(QDialog):
     def __init__(self, parent=None):

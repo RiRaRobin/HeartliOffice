@@ -685,7 +685,7 @@ class MainWindow(QMainWindow):
     def on_q_new(self):
         from PySide6.QtWidgets import QMessageBox
         try:
-            from src.questions.question_dialog import QuestionDialog
+            from src.questions.question_dialog import QuestionDialog # type: ignore
             dlg = QuestionDialog(self)
             dlg.show()
             def done():

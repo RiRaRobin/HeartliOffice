@@ -5,11 +5,11 @@ from datetime import date
 from typing import Any, Dict, List
 
 from path_config import DATA_QUESTIONS_ACTIVE, DATA_QUESTIONS_ARCHIVE
-from src.common.io_yaml import read_yaml, write_yaml
+from src.common.io_yaml import read_yaml, write_yaml # type: ignore
 
 # optional: IDs wie bei Tasks
 try:
-    from src.common.ids import _next_running_number
+    from src.common.ids import _next_running_number # type: ignore
     USE_IDS = True
 except Exception:
     USE_IDS = False
