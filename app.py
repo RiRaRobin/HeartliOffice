@@ -382,7 +382,30 @@ class MainWindow(QMainWindow):
             tm.setColumnWidth(3, 120)
             tm.setColumnWidth(4, 100)
             tm.setColumnWidth(5, 90)
+        
+        # Questions: Tabelle konfigurieren
+        tq = self.root.findChild(QTableWidget, "tableQuestions")
+        if tq:
+            h: QHeaderView = tq.horizontalHeader()
 
+            # 1) GANZ WICHTIG: Last-Section-Stretch ausschalten (überschreibt UI-Attribut)
+            h.setStretchLastSection(False)
+
+            tq.setWordWrap(False)
+            tq.setSelectionBehavior(QTableWidget.SelectRows)
+            tq.setSelectionMode(QTableWidget.SingleSelection)
+
+            # 2) Resize-Modi pro Spalte setzen
+            h.setSectionResizeMode(0, QHeaderView.Fixed)     # Person = fix
+            h.setSectionResizeMode(1, QHeaderView.Stretch)   # Frage = dynamisch (füllt Rest)
+            h.setSectionResizeMode(2, QHeaderView.Fixed)     # Status = fix
+            h.setSectionResizeMode(3, QHeaderView.Fixed)     # Typ = fix
+
+            # 3) Fixbreiten setzen (min. Breite beachten)
+            # h.setMinimumSectionSize(20)  # optional, falls 10px gewünscht
+            tq.setColumnWidth(0, 120)    # Person
+            tq.setColumnWidth(2, 90)     # Status
+            tq.setColumnWidth(3, 100)     # Typ (jetzt bleibt klein)
             
     def on_task_new(self):
         from PySide6.QtWidgets import QMessageBox
