@@ -13,6 +13,8 @@ from PySide6.QtGui import QColor, QBrush, QShortcut, QKeySequence
 from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
 from src.tasks.tasks_service import load_tasks_active, load_task, archive_task # type: ignore
+from src.questions.questions_service import load_questions_active, close_question # type: ignore
+
 
 ROOT = Path(__file__).resolve().parent
 UI_FILE = ROOT / "ui" / "main_window.ui"
@@ -135,8 +137,19 @@ class MainWindow(QMainWindow):
             QPushButton:hover { background: #111827; }
         """)
         
+        # Questions-Widgets
+        self.tableQuestions = self.root.findChild(QTableWidget, "tableQuestions")
+        self.btnQNew        = self.root.findChild(QPushButton, "btnQNew")
+        self.btnQClose      = self.root.findChild(QPushButton, "btnQClose")
+        self.btnQJumpToTask = self.root.findChild(QPushButton, "btnQJumpToTask")
+
+        if self.btnQNew:        self.btnQNew.clicked.connect(self.on_q_new)
+        if self.btnQClose:      self.btnQClose.clicked.connect(self.on_q_close)
+        if self.btnQJumpToTask: self.btnQJumpToTask.clicked.connect(self.on_q_jump_to_task)
+        
         self.show_page("Home")
         self.reload_tasks_views()
+        self.reload_questions_view()
         
         # --- Tastatur-Shortcuts ---
         self.tableAll = self.root.findChild(QTableWidget, "tableAllTasks")
@@ -633,6 +646,85 @@ class MainWindow(QMainWindow):
             rows = [t for t in rows if any(q in norm(t.get(k, "")) for k in KEYS)]
 
         return rows
+    
+    def reload_questions_view(self):
+        t = getattr(self, "tableQuestions", None)
+        if not t:
+            return
+        rows = load_questions_active()
+        self._q_rows = rows  # Reihenfolge für ID-Zugriff merken
+
+        t.setSortingEnabled(False)
+        t.clearContents()
+        t.setRowCount(len(rows))
+
+        for r, q in enumerate(rows):
+            items = [
+                QTableWidgetItem(q.get("person","")),
+                QTableWidgetItem(q.get("frage","")),
+                QTableWidgetItem(q.get("status","")),
+                QTableWidgetItem(q.get("typ","")),
+            ]
+            for c, it in enumerate(items):
+                it.setFlags(it.flags() & ~Qt.ItemIsEditable)
+                t.setItem(r, c, it)
+
+        t.setSortingEnabled(True)
+        t.sortItems(0, Qt.AscendingOrder)
+
+    def _q_selected_id(self) -> str | None:
+        t = getattr(self, "tableQuestions", None)
+        if not t or not getattr(self, "_q_rows", None):
+            return None
+        sel = t.selectedItems()
+        if not sel:
+            return None
+        row = sel[0].row()
+        return self._q_rows[row].get("id")
+
+    def on_q_new(self):
+        from PySide6.QtWidgets import QMessageBox
+        try:
+            from src.questions.question_dialog import QuestionDialog
+            dlg = QuestionDialog(self)
+            dlg.show()
+            def done():
+                if dlg.created_id:
+                    QMessageBox.information(self, "Gespeichert", f"Neue Frage: {dlg.created_id}")
+                    self.reload_questions_view()
+            dlg.accepted.connect(done)
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", str(e))
+
+    def on_q_close(self):
+        from PySide6.QtWidgets import QMessageBox
+        qid = self._q_selected_id()
+        if not qid:
+            QMessageBox.information(self, "Hinweis", "Bitte zuerst eine Frage auswählen.")
+            return
+        try:
+            close_question(qid)  # Status = CLOSED
+            self.reload_questions_view()
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", str(e))
+
+    def on_q_jump_to_task(self):
+        # MVP: wenn verlinkt → Tasks-Tab öffnen & suchen
+        qid = self._q_selected_id()
+        if not qid:
+            return
+        rows = getattr(self, "_q_rows", [])
+        q = next((x for x in rows if x.get("id")==qid), None)
+        if not q:
+            return
+        tid = (q.get("linked_task_id") or "").strip()
+        if not tid:
+            return
+        if hasattr(self, "leTaskSearch") and self.leTaskSearch:
+            self.leTaskSearch.setText(tid)
+            self._search_text = tid
+        self.show_page("Tasks")
+        self.reload_tasks_views()
 
 
 if __name__ == "__main__":
