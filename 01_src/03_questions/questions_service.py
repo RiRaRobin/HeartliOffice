@@ -7,7 +7,6 @@ from typing import Any, Dict, List
 from path_config import DATA_QUESTIONS_ACTIVE, DATA_QUESTIONS_ARCHIVE
 from src.common.io_yaml import read_yaml, write_yaml # type: ignore
 
-# optional: IDs wie bei Tasks
 try:
     from src.common.ids import _next_running_number # type: ignore
     USE_IDS = True
@@ -50,6 +49,23 @@ def load_questions_active() -> List[Dict[str, Any]]:
             print(f"[WARN] Frage {f.name} nicht ladbar: {e}")
     return rows
 
+def load_question(qid: str) -> Dict[str, Any]:
+    p = _q_file_active(qid)
+    if not p.exists():
+        raise FileNotFoundError(qid)
+    return _normalize(read_yaml(p) or {})
+
+def update_question(qid: str, data: Dict[str, Any]) -> None:
+    """bestehende Frage aktualisieren (ACTIVE)"""
+    p = _q_file_active(qid)
+    if not p.exists():
+        raise FileNotFoundError(qid)
+    cur = _normalize(read_yaml(p) or {})
+    for k, v in data.items():
+        if v is not None:
+            cur[k] = v
+    write_yaml(p, cur)
+
 def generate_qid(title_hint: str = "q") -> str:
     today = date.today().strftime("%Y-%m-%d")
     prefix = f"Q-{today}"
@@ -77,17 +93,11 @@ def save_new_question(data: Dict[str, Any]) -> str:
     return qid
 
 def close_question(qid: str) -> None:
-    """Status CLOSED setzen (bleibt in ACTIVE; optional später archivieren)."""
-    p = _q_file_active(qid)
-    if not p.exists():
-        raise FileNotFoundError(qid)
-    cur = _normalize(read_yaml(p) or {})
-    cur["status"] = "CLOSED"
-    cur["closed_at"] = date.today().strftime("%Y-%m-%d")
-    write_yaml(p, cur)
+    """Status CLOSED setzen (optional, wenn du vor Archiv noch ‚geschlossen‘ markieren willst)"""
+    update_question(qid, {"status": "CLOSED", "closed_at": date.today().strftime("%Y-%m-%d")})
 
 def archive_question(qid: str) -> None:
-    """Frage nach ARCHIVE verschieben."""
+    """Frage nach ARCHIVE verschieben (aus ACTIVE entfernen)."""
     _ensure_dirs()
     src = _q_file_active(qid)
     if not src.exists():

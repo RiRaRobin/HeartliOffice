@@ -13,7 +13,7 @@ from PySide6.QtGui import QColor, QBrush, QShortcut, QKeySequence
 from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
 from src.tasks.tasks_service import load_tasks_active, load_task, archive_task # type: ignore
-from src.questions.questions_service import load_questions_active, close_question # type: ignore
+from src.questions.questions_service import load_questions_active, close_question, archive_question, load_question # type: ignore
 
 
 ROOT = Path(__file__).resolve().parent
@@ -127,6 +127,12 @@ class MainWindow(QMainWindow):
         self._project_filter_active: set[str] | None = None  # None = kein Filter (alles zeigen)
         
         self._search_text: str = ""
+        
+        # --- Questions: Personen-Filter-State
+        self._q_checks: dict[str, QCheckBox] = {}
+        self._q_cbAll: QCheckBox | None = None
+        self._q_filter_active: set[str] | None = None  # None = alles zeigen
+        self.build_question_filters()
 
         # Filter-UI bauen (aus den vorhandenen YAMLs)
         self.build_project_filters()
@@ -146,6 +152,9 @@ class MainWindow(QMainWindow):
         if self.btnQNew:        self.btnQNew.clicked.connect(self.on_q_new)
         if self.btnQClose:      self.btnQClose.clicked.connect(self.on_q_close)
         if self.btnQJumpToTask: self.btnQJumpToTask.clicked.connect(self.on_q_jump_to_task)
+        # Doppelklick zum Bearbeiten
+        if self.tableQuestions:
+            self.tableQuestions.itemDoubleClicked.connect(self.on_q_edit)
         
         self.show_page("Home")
         self.reload_tasks_views()
@@ -652,6 +661,11 @@ class MainWindow(QMainWindow):
         if not t:
             return
         rows = load_questions_active()
+
+        # ▼▼ Personenfilter ▼▼
+        if self._q_filter_active is not None:
+            rows = [r for r in rows if (r.get("person") or "") in self._q_filter_active]
+
         self._q_rows = rows  # Reihenfolge für ID-Zugriff merken
 
         t.setSortingEnabled(False)
@@ -691,6 +705,8 @@ class MainWindow(QMainWindow):
             def done():
                 if dlg.created_id:
                     QMessageBox.information(self, "Gespeichert", f"Neue Frage: {dlg.created_id}")
+                    # NEU: Filter-Leiste (Personen) neu aufbauen, DANN Tabelle neu laden
+                    self.build_question_filters()
                     self.reload_questions_view()
             dlg.accepted.connect(done)
         except Exception as e:
@@ -703,7 +719,10 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, "Hinweis", "Bitte zuerst eine Frage auswählen.")
             return
         try:
-            close_question(qid)  # Status = CLOSED
+            # optional: erst Status setzen, dann archivieren
+            # close_question(qid)
+            archive_question(qid)  # <-- verschiebt YAML in 02_archive
+            self.build_question_filters()  # Personenliste kann sich ändern
             self.reload_questions_view()
         except Exception as e:
             QMessageBox.critical(self, "Fehler", str(e))
@@ -725,6 +744,97 @@ class MainWindow(QMainWindow):
             self._search_text = tid
         self.show_page("Tasks")
         self.reload_tasks_views()
+        
+    def on_q_edit(self, _item=None):
+        from PySide6.QtWidgets import QMessageBox
+        qid = self._q_selected_id()
+        if not qid:
+            return
+        try:
+            q = load_question(qid)   # <- HIER: load_question statt load_questions
+            from src.questions.question_dialog import QuestionDialog # type: ignore
+            dlg = QuestionDialog(self, mode="edit", question=q)
+            dlg.show()
+            def done():
+                if dlg.created_id:
+                    QMessageBox.information(self, "Gespeichert", f"Frage aktualisiert: {dlg.created_id}")
+                    self.build_question_filters()
+                    self.reload_questions_view()
+            dlg.accepted.connect(done)
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", str(e))
+        
+    def build_question_filters(self):
+        """Erzeugt/aktualisiert Personen-Checkboxen oberhalb der Questions-Tabelle."""
+        persons = sorted({ (q.get("person") or "") for q in load_questions_active() })
+
+        # Container suchen oder oberhalb von tableQuestions anlegen
+        container = self.root.findChild(QWidget, "panelQFilters")
+        if container is None:
+            # baue einen Container direkt über der Tabelle
+            page = self.root.findChild(QWidget, "pageQuestions")
+            if page is None:
+                return
+            lay = page.layout()
+            if lay is None:
+                lay = QVBoxLayout(page)
+            container = QWidget(page)
+            container.setObjectName("panelQFilters")
+            lay.insertWidget(1, container)  # nach der Summary/Topbar, vor der Tabelle
+
+        layout = container.layout()
+        if layout is None:
+            layout = QHBoxLayout(container)
+            layout.setContentsMargins(0,0,0,0)
+            layout.setSpacing(8)
+        else:
+            while layout.count():
+                item = layout.takeAt(0); w = item.widget()
+                if w: w.setParent(None)
+
+        self._q_checks.clear()
+        # „Alle“
+        self._q_cbAll = QCheckBox("Alle", container)
+        self._q_cbAll.setChecked(True)
+
+        def on_toggle_all_q():
+            all_on = all(cb.isChecked() for cb in self._q_checks.values())
+            target = not all_on
+            for cb in self._q_checks.values():
+                cb.blockSignals(True); cb.setChecked(target); cb.blockSignals(False)
+            self.on_q_filter_changed()
+        self._q_cbAll.clicked.connect(on_toggle_all_q)
+        layout.addWidget(self._q_cbAll)
+
+        # einzelne Personen
+        for p in persons:
+            label = p if p else "(ohne Person)"
+            cb = QCheckBox(label, container)
+            cb.setChecked(True)
+            cb.stateChanged.connect(lambda _s, value=p: self.on_q_single_changed(value))
+            layout.addWidget(cb)
+            self._q_checks[p] = cb
+
+        layout.addStretch()
+        self._q_filter_active = set(persons)
+
+    def on_q_single_changed(self, person_value: str):
+        self.on_q_filter_changed()
+
+    def on_q_filter_changed(self):
+        active: set[str] = set()
+        for value, cb in self._q_checks.items():
+            if cb.isChecked():
+                active.add(value)
+        self._q_filter_active = active
+
+        if self._q_cbAll:
+            all_on = len(active) == len(self._q_checks)
+            self._q_cbAll.blockSignals(True)
+            self._q_cbAll.setChecked(all_on)
+            self._q_cbAll.blockSignals(False)
+
+        self.reload_questions_view()
 
 
 if __name__ == "__main__":
