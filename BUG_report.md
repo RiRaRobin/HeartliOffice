@@ -3,6 +3,7 @@ B-0001  Suchfunktion in tasks etwas fragile
 B-0002  Alle Hauptsuchfelder sind unterschiedlich gross
 B-0003  Von Frage zu Task springen funktioniert nicht mehr :/
 B-0004  Files können nicht gelöscht werden XD
+B-0005  Verknüpfte files --> IDs müssen beim verknüpfen nicht angezeigt werden, sie sind irrelevant
 
 
 VERBESSERUNG
