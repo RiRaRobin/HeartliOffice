@@ -346,76 +346,49 @@ class MainWindow(QMainWindow):
         table.sortItems(0, Qt.AscendingOrder)
 
     def reload_files_view(self):
-        """Füllt die Files-Tabelle neu, mit Projektfilter + Textsuche."""
-        if not self.tableFiles:
+        """Füllt die Files-Tabelle neu."""
+        table = self.root.findChild(QTableWidget, "tableFiles")
+        if not table:
             return
 
         rows = load_files_active()
 
-        # Projekt-Filter
-        proj_filter = ""
-        if self.cbFilesProject and self.cbFilesProject.currentText():
-            txt = self.cbFilesProject.currentText().strip()
-            if txt != "(alle)":
-                proj_filter = txt
-
-        if proj_filter:
-            rows = [r for r in rows if (r.get("projekt") or "").strip() == proj_filter]
-
-        # Suchtext
-        q = ""
-        if self.leFilesSearch and self.leFilesSearch.text():
-            q = self.leFilesSearch.text().strip().lower()
-        if q:
-            def matches(r):
-                blob = " ".join([
-                    r.get("ref",""),
-                    r.get("name",""),
-                    r.get("beschreibung",""),
-                    r.get("notizen",""),
-                ]).lower()
-                return q in blob
-            rows = [r for r in rows if matches(r)]
-
-        # Projektliste im Combo aktualisieren
-        if self.cbFilesProject:
-            projects = sorted({(r.get("projekt") or "").strip()
-                               for r in load_files_active()
-                               if (r.get("projekt") or "").strip()})
-            cur = self.cbFilesProject.currentText()
-            self.cbFilesProject.blockSignals(True)
-            self.cbFilesProject.clear()
-            self.cbFilesProject.addItem("(alle)")
-            for p in projects:
-                self.cbFilesProject.addItem(p)
-            # alten Wert wenn möglich wiederherstellen
-            idx = self.cbFilesProject.findText(cur)
-            if idx >= 0:
-                self.cbFilesProject.setCurrentIndex(idx)
-            self.cbFilesProject.blockSignals(False)
-
-        # Tabelle füllen
-        t = self.tableFiles
-        t.setSortingEnabled(False)
-        t.clearContents()
-        t.setRowCount(len(rows))
+        table.setSortingEnabled(False)
+        table.clearContents()
+        table.setRowCount(len(rows))
 
         for r, f in enumerate(rows):
+            # Links-Listen schön als String
+            links_in = f.get("links_in", [])
+            links_out = f.get("links_out", [])
+            if isinstance(links_in, list):
+                links_in_str = ", ".join(str(x) for x in links_in)
+            else:
+                links_in_str = str(links_in or "")
+
+            if isinstance(links_out, list):
+                links_out_str = ", ".join(str(x) for x in links_out)
+            else:
+                links_out_str = str(links_out or "")
+
             items = [
-                QTableWidgetItem(f.get("typ","")),
-                QTableWidgetItem(f.get("ref","")),
-                QTableWidgetItem(f.get("name","")),
-                QTableWidgetItem(f.get("projekt","")),
-                QTableWidgetItem(", ".join(f.get("tags", []) or [])),
-                QTableWidgetItem(f.get("notizen","")),
+                QTableWidgetItem(f.get("name", "")),                # 0 Name
+                QTableWidgetItem(f.get("ref", "")),                 # 1 Nummer/Pfad
+                QTableWidgetItem(f.get("projekt", "")),             # 2 Projekt
+                QTableWidgetItem(links_in_str),                     # 3 Links IN
+                QTableWidgetItem(links_out_str),                    # 4 Links OUT
+                QTableWidgetItem(f.get("notizen", "")),             # 5 Notizen
+                QTableWidgetItem(f.get("typ", "")),                 # 6 Typ
+                QTableWidgetItem(f.get("created_at", "")),          # 7 Erstellt
             ]
+
             for c, it in enumerate(items):
                 it.setFlags(it.flags() & ~Qt.ItemIsEditable)
-                t.setItem(r, c, it)
+                table.setItem(r, c, it)
 
-        t.setSortingEnabled(True)
-        # optional: nach Projekt + Name sortieren
-        t.sortItems(3, Qt.AscendingOrder)
+        table.setSortingEnabled(True)
+        # Optional: nach Name sortieren
+        table.sortItems(0, Qt.AscendingOrder)
 
     def show_page(self, name: str):
         mapping = {
@@ -534,26 +507,31 @@ class MainWindow(QMainWindow):
             tq.setColumnWidth(3, 100)     # Typ (jetzt bleibt klein)
 
         # Files: Tabelle konfigurieren
-        tf = self.root.findChild(QTableWidget, "tableFiles")
+        tf = config_table("tableFiles", stretch_last=False)
         if tf:
             h: QHeaderView = tf.horizontalHeader()
             tf.setWordWrap(False)
             tf.setSelectionBehavior(QTableWidget.SelectRows)
             tf.setSelectionMode(QTableWidget.SingleSelection)
 
-            # Spalten: 0 Typ | 1 Ref | 2 Name | 3 Projekt | 4 Tags | 5 Notizen
-            h.setSectionResizeMode(0, QHeaderView.Fixed)
+            # Spalten: 0 Name | 1 Nummer/Pfad | 2 Projekt | 3 Links IN
+            #          4 Links OUT | 5 Notizen | 6 Typ | 7 Erstellt
+            h.setSectionResizeMode(0, QHeaderView.Fixed)   # Name = dehnbar
             h.setSectionResizeMode(1, QHeaderView.Fixed)
-            h.setSectionResizeMode(2, QHeaderView.Stretch)  # Name = dynamisch
+            h.setSectionResizeMode(2, QHeaderView.Fixed)
             h.setSectionResizeMode(3, QHeaderView.Fixed)
             h.setSectionResizeMode(4, QHeaderView.Fixed)
-            h.setSectionResizeMode(5, QHeaderView.Fixed)
+            h.setSectionResizeMode(5, QHeaderView.Stretch)
+            h.setSectionResizeMode(6, QHeaderView.Fixed)
+            h.setSectionResizeMode(7, QHeaderView.Fixed)
 
-            tf.setColumnWidth(0, 60)   # Typ
-            tf.setColumnWidth(1, 160)  # Ref (BU/Pfad)
-            tf.setColumnWidth(3, 140)  # Projekt
-            tf.setColumnWidth(4, 120)  # Tags
-            tf.setColumnWidth(5, 220)  # Notizen
+            tf.setColumnWidth(1, 150)   # Nummer/Pfad
+            tf.setColumnWidth(2, 120)   # Projekt
+            tf.setColumnWidth(3, 90)    # Links IN
+            tf.setColumnWidth(4, 90)    # Links OUT
+            tf.setColumnWidth(5, 180)   # Notizen
+            tf.setColumnWidth(6, 60)    # Typ
+            tf.setColumnWidth(7, 130)   # Erstellt
             
     def on_task_new(self):
         from PySide6.QtWidgets import QMessageBox
