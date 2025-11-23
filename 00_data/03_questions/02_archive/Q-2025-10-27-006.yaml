@@ -1,0 +1,10 @@
+id: Q-2025-10-27-006
+person: Philipp
+frage: Kann das ETCS-Diagnosesystem auch mit einem alternativen Monitoring-Anbieter
+  umgesetzt werden? Falls RDS nicht verwendet wird?
+status: OPEN
+typ: FRAGE
+linked_task_id: ''
+created_at: '2025-10-27'
+closed_at: ''
+notes: ''

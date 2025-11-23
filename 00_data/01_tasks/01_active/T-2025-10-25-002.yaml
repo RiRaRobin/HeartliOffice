@@ -6,7 +6,7 @@ dokument_name: IHB Am 843
 auftrag_erhalten: '2025-10-25'
 faellig_bis: '2026-02-27'
 weitere_dokumente: []
-notizen: ''
+notizen: SecRAC / SRAC SW Stände implementieren
 follow_up: ''
 status: OPEN
 dringlichkeit: 3

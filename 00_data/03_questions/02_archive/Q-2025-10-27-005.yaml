@@ -1,0 +1,15 @@
+id: Q-2025-10-27-005
+person: Philipp
+frage: «Applikation ETCS Key Tool» ist dies im TECT Tool realisiert?
+status: OPEN
+typ: FRAGE
+linked_task_id: ''
+created_at: '2025-10-27'
+closed_at: ''
+notes: 'Integrationskonzept Am843
+
+  Silvan Fragen
+
+  Schlüssel generieren im KET (Key Encription Tool)
+
+  Schlüssel auf Fz laden im TECT'

@@ -1,13 +1,27 @@
 id: T-2025-10-25-001
-beschreibung: IHB Tm 235 erstellen
+beschreibung: IHB Tm 235
 projekt: BLS Netz
 dokument_nr: BU_6591909
 dokument_name: IHB Tm 235
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2025-12-19'
+faellig_bis: '2025-11-28'
 weitere_dokumente: []
-notizen: ''
-follow_up: ''
-status: OPEN
+notizen: 'secRAC / SRAC betreffend SW stände einpflegen
+
+  CMD Schalter einpfelgen
+
+
+  SIGCH --> Stadler Signaling AG'
+follow_up: '11.11.2025: Fusszeile nach einchecken prüfen, Kopfzeile schräg, Automatische
+  Silbentrennung aktivieren, Design vereinheitlichen, auf SBB untersuchen, Warnhinweise
+  auf einmal formatieren
+
+  12.11.2025 bis auf wenige Fragen, und fehlnde Dokumente FERTIG
+
+  14.11.2025 in prüfung BLS
+
+  21.11.2025 Feedback SL: Begriffe angleichen (inhaltlich aber gut - sehr angenehmes
+  gespräch)'
+status: READY
 dringlichkeit: 3
 verlinkte_fragen: []

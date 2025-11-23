@@ -4,14 +4,14 @@ projekt: BLS Netz
 dokument_nr: ''
 dokument_name: ''
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2025-10-31'
+faellig_bis: '2025-11-24'
 weitere_dokumente: []
 notizen: 'Einbaukonzept lesen/prüfen --> genügt nicht
 
   Themeatik verstehen
 
   EN lesen'
-follow_up: ''
-status: OPEN
-dringlichkeit: 1
+follow_up: 19.11.2025 Wenn dok XX (s. techn. Lastenheft) genügt i.o
+status: READY
+dringlichkeit: 2
 verlinkte_fragen: []

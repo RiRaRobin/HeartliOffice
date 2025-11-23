@@ -4,10 +4,11 @@ projekt: BLS Netz
 dokument_nr: BU_5414530
 dokument_name: SRS Tm 235
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2025-10-31'
+faellig_bis: '2025-11-14'
 weitere_dokumente: []
-notizen: ''
-follow_up: ''
-status: OPEN
+notizen: "Besprechung secRAC: Alle werden entfernt, ein SRAC wird neu hinzugefügt.\n\
+  RR:\tBU_5363755"
+follow_up: 31.10.2025 CR eingepflegt - warten auf Review
+status: READY
 dringlichkeit: 1
 verlinkte_fragen: []

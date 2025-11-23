@@ -1,0 +1,14 @@
+id: T-2025-11-14-001
+beschreibung: Cycle Rates Justification Fehlerbeheeben gem. Rene
+projekt: BLS Netz
+dokument_nr: BU_6598023
+dokument_name: ''
+auftrag_erhalten: '2025-11-14'
+faellig_bis: '2025-11-18'
+weitere_dokumente: []
+notizen: 'Drain Main brake pipe (pressure switch) steht mit 28 in der Tabelle, sollten
+  nur 8 sein (4x BV + 4x EB) – mit 8 steht es auch in der FIT Tabelle '
+follow_up: 17.11.2025 Bei philipp zur Prüfung
+status: READY
+dringlichkeit: 2
+verlinkte_fragen: []

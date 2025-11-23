@@ -12,6 +12,8 @@ V-0004  Aufgaben ohne Fälligkeit erstellen
 V-0005  Projektnamen die bereits bekannt sind, schneller integrieren können beim erstellen von Tasks
 V-0006  Task filter nach Status
 V-0007  Suchfunktion: Leerschläge können auch ignoriert werden
+V-0008  ID bei Questions hinzufügen
+V-0009  Kontras bei Fälligen Aufgaben schlecht (Rot auf dunklem Grund)
 
 
 MISSING
@@ -27,3 +29,4 @@ M-0007  Testprogramm schreiben
 FEATURE
 F-0001  Task Benennung erweitern, so dass Tasks auch versendet werden können.
 F-0002  Task Liste als Excel oder CSV oder so, exportieren können.
+F-0003  Stadler-Blau einpflegen

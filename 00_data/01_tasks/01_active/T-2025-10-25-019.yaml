@@ -1,13 +1,24 @@
 id: T-2025-10-25-019
 beschreibung: BHB Tm 235 und Am 843
 projekt: BLS Netz
-dokument_nr: BU_6167333
+dokument_nr: BU_6591887
 dokument_name: BHB Tm 235 & Am 843
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2025-10-31'
+faellig_bis: '2025-11-28'
 weitere_dokumente: []
-notizen: prüfen lassen von Cyril und Philipp
-follow_up: ''
-status: OPEN
+notizen: 'prüfen lassen von Cyril und Philipp
+
+  CMD Abtrennschalter ergänzen
+
+  Installation Manual Am ergänzen'
+follow_up: '29.10.2025 Bei Cyril und Philipp in Prüfung
+
+  11.11.2025 folgendes ist noch falsch, Fusszeile Titelseite, Projekt Nr
+
+  17.11.2025 liegt bei BLS
+
+  21.11.2025 Feedback SL: Begriffe angleichen (inhaltlich aber gut - sehr angenehmes
+  gespräch)'
+status: READY
 dringlichkeit: 3
 verlinkte_fragen: []

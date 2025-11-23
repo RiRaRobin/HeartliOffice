@@ -1,13 +1,17 @@
 id: T-2025-10-25-011
-beschreibung: Klebt UHU wirklich gut?
-projekt: test1
+beschreibung: 'AVOR SecRAC-Meeting:
+
+  - Zeitplan
+
+  - Infos Zusammentragen & Aufbereiten'
+projekt: BLS Netz
 dokument_nr: ''
 dokument_name: ''
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2025-10-26'
+faellig_bis: '2025-10-27'
 weitere_dokumente: []
 notizen: ''
-follow_up: ''
-status: DONE
-dringlichkeit: 2
+follow_up: ohne Zeitplan
+status: OPEN
+dringlichkeit: 1
 verlinkte_fragen: []

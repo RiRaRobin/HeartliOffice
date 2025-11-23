@@ -1,13 +1,20 @@
 id: T-2025-10-25-014
-beschreibung: SRS Am 843
+beschreibung: 'SRS Am 843: abschliessen'
 projekt: BLS Netz
 dokument_nr: BU_5490864
 dokument_name: SRS Am 843
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2025-10-31'
+faellig_bis: '2025-11-24'
 weitere_dokumente: []
-notizen: ''
-follow_up: Kommentare Reda offen
-status: READY
+notizen: "RR:\tBU_5490882\n\nNr\ndel 271\n"
+follow_up: '31.10.2025 finaler Check vom RR, Gespräche in KW 46 führen
+
+  10.11.2025: Kommentare erhalten: Roccio, Reda
+
+  17.11.2025 Reda nur noch Final Check alles besprochen. Rocio teilweise beantwortet
+  offene punkte wegen fehlendem Zulassungskonzept.
+
+  20.11.2025 Letzte Punkte zu EMV klären. BEi Alex, Philipp oder Fabio'
+status: OPEN
 dringlichkeit: 1
 verlinkte_fragen: []
