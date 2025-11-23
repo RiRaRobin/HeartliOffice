@@ -333,7 +333,7 @@ class Ui_MainWindow(object):
         self.scrollProjects.setWidgetResizable(True)
         self.scrollProjectsContents = QWidget()
         self.scrollProjectsContents.setObjectName(u"scrollProjectsContents")
-        self.scrollProjectsContents.setGeometry(QRect(0, 0, 238, 60))
+        self.scrollProjectsContents.setGeometry(QRect(0, 0, 181, 40))
         self.projectsChecks_vbox = QVBoxLayout(self.scrollProjectsContents)
         self.projectsChecks_vbox.setObjectName(u"projectsChecks_vbox")
         self.lblProjectsHint = QLabel(self.scrollProjectsContents)
@@ -437,7 +437,7 @@ class Ui_MainWindow(object):
         self.scrollProjectsMeetings.setWidgetResizable(True)
         self.scrollProjectsMeetingsContents = QWidget()
         self.scrollProjectsMeetingsContents.setObjectName(u"scrollProjectsMeetingsContents")
-        self.scrollProjectsMeetingsContents.setGeometry(QRect(0, 0, 238, 60))
+        self.scrollProjectsMeetingsContents.setGeometry(QRect(0, 0, 181, 40))
         self.projectsMeetingsChecks_vbox = QVBoxLayout(self.scrollProjectsMeetingsContents)
         self.projectsMeetingsChecks_vbox.setObjectName(u"projectsMeetingsChecks_vbox")
         self.lblMeetingsProjectsHint = QLabel(self.scrollProjectsMeetingsContents)
@@ -646,7 +646,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.mainStack.setCurrentIndex(0)
+        self.mainStack.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -680,6 +680,7 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem5.setText(QCoreApplication.translate("MainWindow", u"F\u00e4llig", None));
         self.boxFilesFilters.setTitle(QCoreApplication.translate("MainWindow", u"Filter & Aktionen", None))
         self.labelProject.setText(QCoreApplication.translate("MainWindow", u"Projekt:", None))
+        self.cbFilesProject.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Projekt w\u00e4hlen\u2026", None))
         self.labelSuche.setText(QCoreApplication.translate("MainWindow", u"Suche:", None))
         self.btnFilesApply.setText(QCoreApplication.translate("MainWindow", u"Anwenden", None))
         self.btnFileNew.setText(QCoreApplication.translate("MainWindow", u"Neu", None))

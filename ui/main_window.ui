@@ -195,7 +195,7 @@
         <item>
          <widget class="QStackedWidget" name="mainStack">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="pageHome">
            <layout class="QVBoxLayout" name="pageHome_vbox" stretch="0,1">
@@ -327,7 +327,11 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="cbFilesProject"/>
+                <widget class="QComboBox" name="cbFilesProject">
+                 <property name="placeholderText">
+                  <string>Projekt wählen…</string>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QLabel" name="labelSuche">
@@ -510,8 +514,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>238</width>
-                    <height>60</height>
+                    <width>181</width>
+                    <height>40</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="projectsChecks_vbox">
@@ -688,8 +692,8 @@
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>238</width>
-                    <height>60</height>
+                    <width>181</width>
+                    <height>40</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="projectsMeetingsChecks_vbox">

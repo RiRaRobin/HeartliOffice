@@ -15,7 +15,8 @@ from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
 from src.tasks.tasks_service import load_tasks_active, load_task, archive_task # type: ignore
 from src.questions.questions_service import load_questions_active, close_question, archive_question, load_question # type: ignore
-from src.files.files_service import load_files_active  # type: ignore
+from src.files.file_dialog import FileDialog  # type: ignore
+from src.files.files_service import load_files_active, archive_file, load_file  # type: ignore
 
 
 ROOT = Path(__file__).resolve().parent
@@ -148,28 +149,39 @@ class MainWindow(QMainWindow):
             QPushButton:hover { background: #111827; }
         """)
         
-        # --- Files-Widgets ---
-        self.cbFilesProject: QComboBox = self.root.findChild(QComboBox, "cbFilesProject")
-        self.leFilesSearch: QLineEdit  = self.root.findChild(QLineEdit,  "leFilesSearch")
-        self.tableFiles: QTableWidget  = self.root.findChild(QTableWidget, "tableFiles")
+        # --- Files-Seite: Widgets suchen ---
+        self.pageFiles: QWidget        = self.root.findChild(QWidget,    "pageFiles")
+        self.btnNavFiles: QPushButton  = self.root.findChild(QPushButton,"btnNavFiles")
+        self.tableFiles: QTableWidget  = self.root.findChild(QTableWidget,"tableFiles")
+        self.leFileSearch: QLineEdit   = self.root.findChild(QLineEdit,  "leFileSearch")
+        self.btnFileNew: QPushButton   = self.root.findChild(QPushButton,"btnFileNew")
+        self.btnFileEdit: QPushButton  = self.root.findChild(QPushButton,"btnFileEdit")
+        self.btnFileArchive: QPushButton = self.root.findChild(QPushButton,"btnFileArchive")
+        self.cbFilesProject: QComboBox = self.root.findChild(QComboBox,  "cbFilesProject")
 
-        self.btnFileNew: QPushButton      = self.root.findChild(QPushButton, "btnFileNew")
-        self.btnFileEdit: QPushButton     = self.root.findChild(QPushButton, "btnFileEdit")
-        self.btnFileArchive: QPushButton  = self.root.findChild(QPushButton, "btnFileArchive")
+        # Navigation
+        if self.btnNavFiles:
+            self.btnNavFiles.clicked.connect(lambda: self.show_page("Files"))
 
-        # Buttons verbinden – aktuell nur Liste refreshen
+        # Buttons
+        if self.btnFileNew:
+            self.btnFileNew.clicked.connect(self.on_file_new)
+        if self.btnFileEdit:
+            self.btnFileEdit.clicked.connect(self.on_file_edit)
+        if self.btnFileArchive:
+            self.btnFileArchive.clicked.connect(self.on_file_archive)
+
+        # Doppelklick: Bearbeiten
+        if self.tableFiles:
+            self.tableFiles.itemDoubleClicked.connect(lambda *_: self.on_file_edit())
+
+        # Suche + Projektfilter
+        if self.leFileSearch:
+            self.leFileSearch.returnPressed.connect(self.reload_files_view)
+            self.leFileSearch.textChanged.connect(self.reload_files_view)
+
         if self.cbFilesProject:
             self.cbFilesProject.currentIndexChanged.connect(self.reload_files_view)
-        if self.leFilesSearch:
-            self.leFilesSearch.textChanged.connect(self.reload_files_view)
-
-        # TODO: Neu/Bearbeiten/Archiv später
-        if self.btnFileNew:
-            self.btnFileNew.clicked.connect(self.on_file_new_placeholder)
-        if self.btnFileEdit:
-            self.btnFileEdit.clicked.connect(self.on_file_edit_placeholder)
-        if self.btnFileArchive:
-            self.btnFileArchive.clicked.connect(self.on_file_archive_placeholder)
 
         # Questions-Widgets
         self.tableQuestions = self.root.findChild(QTableWidget, "tableQuestions")
@@ -345,58 +357,13 @@ class MainWindow(QMainWindow):
         # Standard: nach ID aufsteigend (älteste zuerst)
         table.sortItems(0, Qt.AscendingOrder)
 
-    def reload_files_view(self):
-        """Füllt die Files-Tabelle neu."""
-        table = self.root.findChild(QTableWidget, "tableFiles")
-        if not table:
-            return
-
-        rows = load_files_active()
-
-        table.setSortingEnabled(False)
-        table.clearContents()
-        table.setRowCount(len(rows))
-
-        for r, f in enumerate(rows):
-            # Links-Listen schön als String
-            links_in = f.get("links_in", [])
-            links_out = f.get("links_out", [])
-            if isinstance(links_in, list):
-                links_in_str = ", ".join(str(x) for x in links_in)
-            else:
-                links_in_str = str(links_in or "")
-
-            if isinstance(links_out, list):
-                links_out_str = ", ".join(str(x) for x in links_out)
-            else:
-                links_out_str = str(links_out or "")
-
-            items = [
-                QTableWidgetItem(f.get("name", "")),                # 0 Name
-                QTableWidgetItem(f.get("ref", "")),                 # 1 Nummer/Pfad
-                QTableWidgetItem(f.get("projekt", "")),             # 2 Projekt
-                QTableWidgetItem(links_in_str),                     # 3 Links IN
-                QTableWidgetItem(links_out_str),                    # 4 Links OUT
-                QTableWidgetItem(f.get("notizen", "")),             # 5 Notizen
-                QTableWidgetItem(f.get("typ", "")),                 # 6 Typ
-                QTableWidgetItem(f.get("created_at", "")),          # 7 Erstellt
-            ]
-
-            for c, it in enumerate(items):
-                it.setFlags(it.flags() & ~Qt.ItemIsEditable)
-                table.setItem(r, c, it)
-
-        table.setSortingEnabled(True)
-        # Optional: nach Name sortieren
-        table.sortItems(0, Qt.AscendingOrder)
-
     def show_page(self, name: str):
         mapping = {
             "Home": self.pageHome,
             "Tasks": self.pageTasks,
             "Meetings": self.pageMeetings,
             "Questions": self.pageQuestions,
-            "Files": self.pageFiles,
+            "Files": self.pageFiles,          # NEU
         }
         page = mapping.get(name)
         if not (self.stack and page):
@@ -410,11 +377,66 @@ class MainWindow(QMainWindow):
             "Tasks": self.btnTasks,
             "Meetings": self.btnMeetings,
             "Questions": self.btnQuestions,
-            "Files": self.btnFiles,
+            "Files": self.btnNavFiles,       # NEU
         }.items():
             if btn:
                 btn.setProperty("active", btn_name == name)
-                btn.style().unpolish(btn); btn.style().polish(btn)
+                btn.style().unpolish(btn)
+                btn.style().polish(btn)
+
+    def reload_files_view(self):
+        if not self.tableFiles:
+            return
+
+        rows = load_files_active()
+
+        # Fürs Erste: einfache Textsuche über Name / Ref / Projekt
+        q = self.leFileSearch.text().strip().lower() if self.leFileSearch else ""
+        if q:
+            def match(r):
+                return (
+                    q in str(r.get("name", "")).lower()
+                    or q in str(r.get("ref", "")).lower()
+                    or q in str(r.get("projekt", "")).lower()
+                )
+            rows = [r for r in rows if match(r)]
+
+        self.tableFiles.setSortingEnabled(False)
+        self.tableFiles.clearContents()
+        self.tableFiles.setRowCount(len(rows))
+
+        for r, f in enumerate(rows):
+            name = f.get("name", "")
+            ref = f.get("ref", "")
+            proj = f.get("projekt", "")
+            li = ", ".join(f.get("links_in") or [])
+            lo = ", ".join(f.get("links_out") or [])
+            note = f.get("notizen", "")
+            typ = f.get("typ", "")
+            created = f.get("created_at", "")
+
+            items = [
+                QTableWidgetItem(name),
+                QTableWidgetItem(ref),
+                QTableWidgetItem(proj),
+                QTableWidgetItem(li),
+                QTableWidgetItem(lo),
+                QTableWidgetItem(note),
+                QTableWidgetItem(typ),
+                QTableWidgetItem(created),
+            ]
+
+            file_id = f.get("id", "")
+            # ID im UserRole der ersten Spalte verstecken
+            items[0].setData(Qt.UserRole, file_id)
+
+            for c, it in enumerate(items):
+                it.setFlags(it.flags() & ~Qt.ItemIsEditable)
+                self.tableFiles.setItem(r, c, it)
+
+        self.tableFiles.setSortingEnabled(True)
+        self.tableFiles.sortItems(0, Qt.AscendingOrder)
+
         
         
     # -------- Helper --------
@@ -947,16 +969,65 @@ class MainWindow(QMainWindow):
 
         self.reload_questions_view()
 
-    # ------ Files: Platzhalter-Actions (Dialog kommt später) ------
+    def on_file_new(self):
+        dlg = FileDialog(self, mode="create")
+        dlg.show()
 
-    def on_file_new_placeholder(self):
-        QMessageBox.information(self, "Files", "File-Erstellen-Dialog noch nicht implementiert. 🙂")
+        def handle_saved():
+            if dlg.created_id:
+                QMessageBox.information(self, "Gespeichert", f"Neues File: {dlg.created_id}")
+                self.reload_files_view()
 
-    def on_file_edit_placeholder(self):
-        QMessageBox.information(self, "Files", "File-Bearbeiten-Dialog noch nicht implementiert. 🙂")
+        dlg.accepted.connect(handle_saved)
 
-    def on_file_archive_placeholder(self):
-        QMessageBox.information(self, "Files", "File-Archivieren-Funktion noch nicht implementiert. 🙂")
+    def on_file_edit(self):
+        fid = self._get_selected_file_id()
+        if not fid:
+            QMessageBox.information(self, "Hinweis", "Bitte zuerst ein File auswählen.")
+            return
+
+        data = load_file(fid)
+        if not data:
+            QMessageBox.warning(self, "Fehler", f"File {fid} konnte nicht geladen werden.")
+            return
+
+        dlg = FileDialog(self, mode="edit", file_data=data)
+        dlg.show()
+
+        def handle_saved():
+            if dlg.created_id:
+                self.reload_files_view()
+
+        dlg.accepted.connect(handle_saved)
+
+    def on_file_archive(self):
+        fid = self._get_selected_file_id()
+        if not fid:
+            QMessageBox.information(self, "Hinweis", "Bitte zuerst ein File auswählen.")
+            return
+
+        ok = archive_file(fid)
+        if not ok:
+            QMessageBox.warning(self, "Fehler", f"File {fid} konnte nicht archiviert werden.")
+            return
+
+        QMessageBox.information(self, "Archiviert", f"File {fid} wurde ins Archiv verschoben.")
+        self.reload_files_view()
+
+    def _get_selected_file_id(self) -> str | None:
+        if not self.tableFiles:
+            return None
+        sel = self.tableFiles.selectedItems()
+        if not sel:
+            return None
+        row = sel[0].row()
+        it = self.tableFiles.item(row, 0)
+        if not it:
+            return None
+        fid = it.data(Qt.UserRole)
+        return str(fid) if fid else None
+    
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

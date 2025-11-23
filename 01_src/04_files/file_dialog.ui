@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FileDialog</class>
+ <widget class="QDialog" name="FileDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>610</width>
+    <height>949</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Neue Aufgabe</string>
+  </property>
+  <layout class="QVBoxLayout" name="vbox_outer">
+   <property name="spacing">
+    <number>8</number>
+   </property>
+   <item>
+    <layout class="QFormLayout" name="form">
+     <property name="labelAlignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblDokName">
+       <property name="text">
+        <string>Dokument-Name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="leFileName"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lblDokNrPfad">
+       <property name="text">
+        <string>Dokument-Nr/Pfad</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="leFileRef"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lblProjekt">
+       <property name="text">
+        <string>Projekt</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="leFileProject"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lblBeschreibung">
+       <property name="text">
+        <string>Beschreibung</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QTextEdit" name="teFileDescription">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="lblStatus">
+       <property name="text">
+        <string>Typ</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="cbFileType"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="lblNotizen">
+       <property name="text">
+        <string>Notizen</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QTextEdit" name="teFileNotes"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="lblFollow">
+       <property name="text">
+        <string>Tags</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QTextEdit" name="leFileTags"/>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLineEdit" name="leLinksInInput"/>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLineEdit" name="leLinksOutInput"/>
+     </item>
+     <item row="8" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QPushButton" name="btnAddLinkIn">
+         <property name="text">
+          <string>Hinzufügen</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnRemoveLinkIn">
+         <property name="text">
+          <string>Entfernen</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Abhängig nach oben</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Abhängigkeit nach unten</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QPushButton" name="btnAddLinkOut">
+         <property name="text">
+          <string>Hinzufügen</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnRemoveLinkOut">
+         <property name="text">
+          <string>Entfernen</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="9" column="1">
+      <widget class="QListWidget" name="listFileLinksIn"/>
+     </item>
+     <item row="12" column="1">
+      <widget class="QListWidget" name="listFileLinksOut"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Save</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
