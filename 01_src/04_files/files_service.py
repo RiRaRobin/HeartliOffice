@@ -68,7 +68,7 @@ def normalize_file(data: Dict[str, Any]) -> Dict[str, Any]:
         "beschreibung": data.get("beschreibung", ""),
         "tags": data.get("tags", []) or [],
         "notizen": data.get("notizen", ""),
-        # Graph-Infos (immer als Liste):
+        # Graph-Infos (immer als Liste von IDs):
         "links_in": data.get("links_in", []) or [],
         "links_out": data.get("links_out", []) or [],
         "created_at": data.get("created_at", ""),

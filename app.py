@@ -4,7 +4,8 @@ from pathlib import Path
 
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QStackedWidget, QPushButton, QSplitter,
-    QHeaderView, QWidget, QLabel
+    QHeaderView, QWidget, QLabel, QTableWidget, QMessageBox, QTableWidgetItem,
+    QComboBox, QLineEdit,
 )
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile, Qt
@@ -14,6 +15,7 @@ from datetime import date, datetime
 from src.tasks.task_dialog import TaskDialog # type: ignore
 from src.tasks.tasks_service import load_tasks_active, load_task, archive_task # type: ignore
 from src.questions.questions_service import load_questions_active, close_question, archive_question, load_question # type: ignore
+from src.files.files_service import load_files_active  # type: ignore
 
 
 ROOT = Path(__file__).resolve().parent
@@ -63,12 +65,14 @@ class MainWindow(QMainWindow):
         self.pageTasks: QWidget     = self.root.findChild(QWidget, "pageTasks")
         self.pageMeetings: QWidget  = self.root.findChild(QWidget, "pageMeetings")
         self.pageQuestions: QWidget = self.root.findChild(QWidget, "pageQuestions")
+        self.pageFiles: QWidget = self.root.findChild(QWidget, "pageFiles")
 
         # Sidebar-Buttons
         self.btnHome: QPushButton      = self.root.findChild(QPushButton, "btnNavHome")
         self.btnTasks: QPushButton     = self.root.findChild(QPushButton, "btnNavTasks")
         self.btnMeetings: QPushButton  = self.root.findChild(QPushButton, "btnNavMeetings")
         self.btnQuestions: QPushButton = self.root.findChild(QPushButton, "btnNavQuestions")
+        self.btnFiles: QPushButton     = self.root.findChild(QPushButton, "btnNavFiles")
         
         self.leTaskSearch = self.root.findChild(QLineEdit, "leTaskSearch")
         self.btnTaskApply = self.root.findChild(QPushButton, "btnTaskApply")
@@ -85,6 +89,7 @@ class MainWindow(QMainWindow):
         if self.btnTasks:     self.btnTasks.clicked.connect(lambda: self.show_page("Tasks"))
         if self.btnMeetings:  self.btnMeetings.clicked.connect(lambda: self.show_page("Meetings"))
         if self.btnQuestions: self.btnQuestions.clicked.connect(lambda: self.show_page("Questions"))
+        if self.btnFiles:     self.btnFiles.clicked.connect(lambda: self.show_page("Files"))
         
         self.btnTaskEdit = self.root.findChild(QPushButton, "btnTaskEdit")
         if self.btnTaskEdit:
@@ -143,6 +148,29 @@ class MainWindow(QMainWindow):
             QPushButton:hover { background: #111827; }
         """)
         
+        # --- Files-Widgets ---
+        self.cbFilesProject: QComboBox = self.root.findChild(QComboBox, "cbFilesProject")
+        self.leFilesSearch: QLineEdit  = self.root.findChild(QLineEdit,  "leFilesSearch")
+        self.tableFiles: QTableWidget  = self.root.findChild(QTableWidget, "tableFiles")
+
+        self.btnFileNew: QPushButton      = self.root.findChild(QPushButton, "btnFileNew")
+        self.btnFileEdit: QPushButton     = self.root.findChild(QPushButton, "btnFileEdit")
+        self.btnFileArchive: QPushButton  = self.root.findChild(QPushButton, "btnFileArchive")
+
+        # Buttons verbinden – aktuell nur Liste refreshen
+        if self.cbFilesProject:
+            self.cbFilesProject.currentIndexChanged.connect(self.reload_files_view)
+        if self.leFilesSearch:
+            self.leFilesSearch.textChanged.connect(self.reload_files_view)
+
+        # TODO: Neu/Bearbeiten/Archiv später
+        if self.btnFileNew:
+            self.btnFileNew.clicked.connect(self.on_file_new_placeholder)
+        if self.btnFileEdit:
+            self.btnFileEdit.clicked.connect(self.on_file_edit_placeholder)
+        if self.btnFileArchive:
+            self.btnFileArchive.clicked.connect(self.on_file_archive_placeholder)
+
         # Questions-Widgets
         self.tableQuestions = self.root.findChild(QTableWidget, "tableQuestions")
         self.btnQNew        = self.root.findChild(QPushButton, "btnQNew")
@@ -159,6 +187,7 @@ class MainWindow(QMainWindow):
         self.show_page("Home")
         self.reload_tasks_views()
         self.reload_questions_view()
+        self.reload_files_view()
         
         # --- Tastatur-Shortcuts ---
         self.tableAll = self.root.findChild(QTableWidget, "tableAllTasks")
@@ -316,6 +345,77 @@ class MainWindow(QMainWindow):
         # Standard: nach ID aufsteigend (älteste zuerst)
         table.sortItems(0, Qt.AscendingOrder)
 
+    def reload_files_view(self):
+        """Füllt die Files-Tabelle neu, mit Projektfilter + Textsuche."""
+        if not self.tableFiles:
+            return
+
+        rows = load_files_active()
+
+        # Projekt-Filter
+        proj_filter = ""
+        if self.cbFilesProject and self.cbFilesProject.currentText():
+            txt = self.cbFilesProject.currentText().strip()
+            if txt != "(alle)":
+                proj_filter = txt
+
+        if proj_filter:
+            rows = [r for r in rows if (r.get("projekt") or "").strip() == proj_filter]
+
+        # Suchtext
+        q = ""
+        if self.leFilesSearch and self.leFilesSearch.text():
+            q = self.leFilesSearch.text().strip().lower()
+        if q:
+            def matches(r):
+                blob = " ".join([
+                    r.get("ref",""),
+                    r.get("name",""),
+                    r.get("beschreibung",""),
+                    r.get("notizen",""),
+                ]).lower()
+                return q in blob
+            rows = [r for r in rows if matches(r)]
+
+        # Projektliste im Combo aktualisieren
+        if self.cbFilesProject:
+            projects = sorted({(r.get("projekt") or "").strip()
+                               for r in load_files_active()
+                               if (r.get("projekt") or "").strip()})
+            cur = self.cbFilesProject.currentText()
+            self.cbFilesProject.blockSignals(True)
+            self.cbFilesProject.clear()
+            self.cbFilesProject.addItem("(alle)")
+            for p in projects:
+                self.cbFilesProject.addItem(p)
+            # alten Wert wenn möglich wiederherstellen
+            idx = self.cbFilesProject.findText(cur)
+            if idx >= 0:
+                self.cbFilesProject.setCurrentIndex(idx)
+            self.cbFilesProject.blockSignals(False)
+
+        # Tabelle füllen
+        t = self.tableFiles
+        t.setSortingEnabled(False)
+        t.clearContents()
+        t.setRowCount(len(rows))
+
+        for r, f in enumerate(rows):
+            items = [
+                QTableWidgetItem(f.get("typ","")),
+                QTableWidgetItem(f.get("ref","")),
+                QTableWidgetItem(f.get("name","")),
+                QTableWidgetItem(f.get("projekt","")),
+                QTableWidgetItem(", ".join(f.get("tags", []) or [])),
+                QTableWidgetItem(f.get("notizen","")),
+            ]
+            for c, it in enumerate(items):
+                it.setFlags(it.flags() & ~Qt.ItemIsEditable)
+                t.setItem(r, c, it)
+
+        t.setSortingEnabled(True)
+        # optional: nach Projekt + Name sortieren
+        t.sortItems(3, Qt.AscendingOrder)
 
     def show_page(self, name: str):
         mapping = {
@@ -323,6 +423,7 @@ class MainWindow(QMainWindow):
             "Tasks": self.pageTasks,
             "Meetings": self.pageMeetings,
             "Questions": self.pageQuestions,
+            "Files": self.pageFiles,
         }
         page = mapping.get(name)
         if not (self.stack and page):
@@ -330,10 +431,13 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(page)
         if self.lblTitle:
             self.lblTitle.setText(name)
-        # active-State togglen
+
         for btn_name, btn in {
-            "Home": self.btnHome, "Tasks": self.btnTasks,
-            "Meetings": self.btnMeetings, "Questions": self.btnQuestions,
+            "Home": self.btnHome,
+            "Tasks": self.btnTasks,
+            "Meetings": self.btnMeetings,
+            "Questions": self.btnQuestions,
+            "Files": self.btnFiles,
         }.items():
             if btn:
                 btn.setProperty("active", btn_name == name)
@@ -428,6 +532,28 @@ class MainWindow(QMainWindow):
             tq.setColumnWidth(0, 120)    # Person
             tq.setColumnWidth(2, 90)     # Status
             tq.setColumnWidth(3, 100)     # Typ (jetzt bleibt klein)
+
+        # Files: Tabelle konfigurieren
+        tf = self.root.findChild(QTableWidget, "tableFiles")
+        if tf:
+            h: QHeaderView = tf.horizontalHeader()
+            tf.setWordWrap(False)
+            tf.setSelectionBehavior(QTableWidget.SelectRows)
+            tf.setSelectionMode(QTableWidget.SingleSelection)
+
+            # Spalten: 0 Typ | 1 Ref | 2 Name | 3 Projekt | 4 Tags | 5 Notizen
+            h.setSectionResizeMode(0, QHeaderView.Fixed)
+            h.setSectionResizeMode(1, QHeaderView.Fixed)
+            h.setSectionResizeMode(2, QHeaderView.Stretch)  # Name = dynamisch
+            h.setSectionResizeMode(3, QHeaderView.Fixed)
+            h.setSectionResizeMode(4, QHeaderView.Fixed)
+            h.setSectionResizeMode(5, QHeaderView.Fixed)
+
+            tf.setColumnWidth(0, 60)   # Typ
+            tf.setColumnWidth(1, 160)  # Ref (BU/Pfad)
+            tf.setColumnWidth(3, 140)  # Projekt
+            tf.setColumnWidth(4, 120)  # Tags
+            tf.setColumnWidth(5, 220)  # Notizen
             
     def on_task_new(self):
         from PySide6.QtWidgets import QMessageBox
@@ -843,6 +969,16 @@ class MainWindow(QMainWindow):
 
         self.reload_questions_view()
 
+    # ------ Files: Platzhalter-Actions (Dialog kommt später) ------
+
+    def on_file_new_placeholder(self):
+        QMessageBox.information(self, "Files", "File-Erstellen-Dialog noch nicht implementiert. 🙂")
+
+    def on_file_edit_placeholder(self):
+        QMessageBox.information(self, "Files", "File-Bearbeiten-Dialog noch nicht implementiert. 🙂")
+
+    def on_file_archive_placeholder(self):
+        QMessageBox.information(self, "Files", "File-Archivieren-Funktion noch nicht implementiert. 🙂")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
