@@ -13,7 +13,8 @@ V-0005  Projektnamen die bereits bekannt sind, schneller integrieren können bei
 V-0006  Task filter nach Status
 V-0007  Suchfunktion: Leerschläge können auch ignoriert werden
 V-0008  ID bei Questions hinzufügen
-V-0009  Kontras bei Fälligen Aufgaben schlecht (Rot auf dunklem Grund)
+V-0009  Kontrast bei Fälligen Aufgaben schlecht (Rot auf dunklem Grund)
+V-0010  Files in den Tasks mit den restlichen Files verknüpfen
 
 
 MISSING

@@ -24,13 +24,15 @@ DATA_QUESTIONS_ARCHIVE = DATA_QUESTIONS / "02_archive"
 
 # === Code ===
 CODE = Path("01_src")
-CODE_COMMON = CODE / "00_common"
+CODE_FILES = CODE / "00_common"
 
 CODE_TASKS = CODE / "01_tasks"
 
 CODE_MEETINGS = CODE / "02_meetings"
 
 CODE_QUESTIONS = CODE / "03_questions"
+
+CODE_FILES = CODE / "04_files"
 
 
 
