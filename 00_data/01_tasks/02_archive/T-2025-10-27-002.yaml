@@ -1,13 +1,29 @@
 id: T-2025-10-27-002
-beschreibung: 15'200 auf oder abrunden
+beschreibung: Integrationskonzept Am
 projekt: BLS Netz
-dokument_nr: ''
-dokument_name: ''
+dokument_nr: BU_6502737
+dokument_name: Integrationskonzept ETCS - Am 843 (501-504)
 auftrag_erhalten: '2025-10-27'
-faellig_bis: '2025-10-28'
+faellig_bis: '2025-11-27'
 weitere_dokumente: []
-notizen: ''
-follow_up: ''
-status: OPEN
+notizen: 'Review, dann interne Freigabe, dann BLS final Check
+
+
+  RR: BU_6613419
+
+
+  '
+follow_up: '31.10.2025 Review (RR)
+
+  10.11.2025 Kommentiert: Philipp
+
+  11.11.2025 korrigiert von Philipp gem. Cyril
+
+  12.11.2025 mit philipp änderungsverzeichnis prüfen (version _?, änderungen wirklich
+  in Blau machen, da meine änderungen von dewr BLS fehlen oder?, zusätzliches kapitel
+  2 wieder Rückgängig machen(SRS)?)
+
+  20.11.2025 Kommentare seiten BLS i.O. warten auf interne Freigabe :/'
+status: READY
 dringlichkeit: 2
 verlinkte_fragen: []
