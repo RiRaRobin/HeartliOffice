@@ -538,7 +538,7 @@ class MainWindow(QMainWindow):
 
             # Spalten: 0 Name | 1 Nummer/Pfad | 2 Projekt | 3 Links IN
             #          4 Links OUT | 5 Notizen | 6 Typ | 7 Erstellt
-            h.setSectionResizeMode(0, QHeaderView.Fixed)   # Name = dehnbar
+            h.setSectionResizeMode(0, QHeaderView.Fixed)
             h.setSectionResizeMode(1, QHeaderView.Fixed)
             h.setSectionResizeMode(2, QHeaderView.Fixed)
             h.setSectionResizeMode(3, QHeaderView.Fixed)
@@ -547,6 +547,7 @@ class MainWindow(QMainWindow):
             h.setSectionResizeMode(6, QHeaderView.Fixed)
             h.setSectionResizeMode(7, QHeaderView.Fixed)
 
+            tf.setColumnWidth(0, 190)   # Name
             tf.setColumnWidth(1, 150)   # Nummer/Pfad
             tf.setColumnWidth(2, 120)   # Projekt
             tf.setColumnWidth(3, 90)    # Links IN
