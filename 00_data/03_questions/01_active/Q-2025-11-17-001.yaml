@@ -1,35 +1,26 @@
 id: Q-2025-11-17-001
 person: FSK BLS-N
-frage: 'TT:
+frage: '- Fehler in SRS Am - Dok im Review (hindert mich aber nicht an der SAS zu
+  abreiten)
 
-  - Wie sollen die offenen Punkte geträckt werden?
+  - Installation Constraints an AS?
 
-  - offene Punkte - bitte schliessen (Réda)
+  - Typentestbericht, Ready aber einige Inputs Fehlen, sind mit Philipp besprochen
 
+  - neues Benutzerhandbuch Tm von AS (rev 2.0) - hat das jemand geprüft? können wir
+  künftig eine Push benachrichtigung via Teams machen?
 
-  Genehmigungshistorie:
-
-  - Am nur gemäss Mail
-
-  - Tm habe ich gar nicht gefunden
-
-
-  Genehmigung:
-
-  - relevanz wenn BLS NOK als prüfung setzt?
-
-
-  Konzept Freeze Tm:
-
-  - Nachweise
-
-
-  Integrationskonzept:
-
-  - Freigeben!'
+  - (SiNa II besprechen - durch CAY ertsellen lassen?)'
 status: OPEN
 typ: FRAGE
 linked_task_id: ''
 created_at: '2025-11-17'
 closed_at: ''
-notes: ''
+notes: 'Typenstestplan / Testplan - Januar 2026
+
+
+  IBS Plan
+
+
+
+  V&V Installation Constraints in meinem Lead'

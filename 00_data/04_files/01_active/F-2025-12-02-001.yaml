@@ -1,0 +1,13 @@
+id: F-2025-12-02-001
+projekt: BLS Netz
+typ: BU
+ref: BU_6401471
+name: Typentest-Bericht (TT)
+beschreibung: ''
+tags: []
+notizen: ''
+links_in:
+- Typentest-Report
+links_out: []
+created_at: '2025-12-02 14:47:32'
+updated_at: '2025-12-02 14:47:32'

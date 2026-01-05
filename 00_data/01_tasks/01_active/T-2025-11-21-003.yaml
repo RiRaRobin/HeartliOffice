@@ -4,7 +4,7 @@ projekt: BLS Netz
 dokument_nr: BU_6401471
 dokument_name: ''
 auftrag_erhalten: '2025-11-21'
-faellig_bis: '2025-12-05'
+faellig_bis: '2026-01-09'
 weitere_dokumente: []
 notizen: 'F:\Engineering\STASIG\02_ENG_ETCS\32_Projects\ETCS_CH_BLS Netz_S-20028\07
   Homologation\07 Test specifications and Reports\07.99 Typentestbericht
@@ -13,10 +13,16 @@ notizen: 'F:\Engineering\STASIG\02_ENG_ETCS\32_Projects\ETCS_CH_BLS Netz_S-20028
   F:\Engineering\STASIG\02_ENG_ETCS\32_Projects\ETCS_DE_DBNetz_BR711.1 Refit_S-20025\7
   Homologation\09 Test specifications and Reports\09.10 Type Test Report
 
+  (BU_5939822)
+
 
   F:\Engineering\STASIG\02_ENG_ETCS\32_Projects\ETCS_CH_BLS Netz_S-20028\07 Homologation\201
-  Authorization NSA-BAV_SIOP-B\2025-09-11\1 Vorbereitung\_IBS Protokolle'
-follow_up: ''
-status: OPEN
-dringlichkeit: 3
+  Authorization NSA-BAV_SIOP-B\2025-09-11\1 Vorbereitung\_IBS Protokolle
+
+
+  F:\Engineering\STASIG\02_ENG_ETCS\32_Projects\ETCS_CH_SBB Flirt Evo_L-4525_S-20019\03
+  Suppliers Documents\09 SBB\IOP_Tests\TeNa_ETCS CH_RABe531_EVO_GA04.01.02_V 1.0_signiert.pdf'
+follow_up: 18.12.2025 im Review bei Reda
+status: READY
+dringlichkeit: 1
 verlinkte_fragen: []

@@ -1,0 +1,14 @@
+id: T-2025-12-09-001
+beschreibung: SAS Am 843
+projekt: BLS Netz
+dokument_nr: BU_5490939
+dokument_name: SAS Am 843
+auftrag_erhalten: '2025-12-09'
+faellig_bis: '2026-01-09'
+weitere_dokumente: []
+notizen: 'EN 14033 nicht Anwendbar auf Am --> SAS: REQA_100, 102, ... --> SRS: REQ_44
+  --> Haz-Log: SM_S-20028_14 --> mit Rene (und V&V) prüfen'
+follow_up: ''
+status: OPEN
+dringlichkeit: 1
+verlinkte_fragen: []

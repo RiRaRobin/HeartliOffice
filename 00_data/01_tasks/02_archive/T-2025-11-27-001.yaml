@@ -4,10 +4,10 @@ projekt: BLS Netz
 dokument_nr: ''
 dokument_name: ''
 auftrag_erhalten: '2025-11-27'
-faellig_bis: '2025-12-01'
+faellig_bis: '2025-12-04'
 weitere_dokumente: []
 notizen: ''
-follow_up: ''
-status: OPEN
+follow_up: Mail an AS
+status: READY
 dringlichkeit: 2
 verlinkte_fragen: []
