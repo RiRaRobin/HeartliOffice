@@ -1,0 +1,31 @@
+id: T-2026-01-12-002
+beschreibung: Anpassung Zugfunk - CCS Integration Note (2a / 2b etc.)
+projekt: SBB Evo
+dokument_nr: ''
+dokument_name: ''
+auftrag_erhalten: '2026-01-12'
+faellig_bis: '2026-01-13'
+weitere_dokumente: []
+notizen: '
+
+  BU_4728203
+
+  Release Note Integration On-Board CCS 1b
+
+  BU_6266358
+
+  Release Note Integration On-Board CCS 1e
+
+  BU_6266370
+
+  Release Note Integration On-Board CCS 2a
+
+  BU_6266375
+
+  Release Note Integration On-Board CCS 2b
+
+  '
+follow_up: 13.01.2025 Zur Freigabe an Vojdan geschickt
+status: DONE
+dringlichkeit: 1
+verlinkte_fragen: []

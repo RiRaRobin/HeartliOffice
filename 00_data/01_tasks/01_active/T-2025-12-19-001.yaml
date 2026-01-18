@@ -1,13 +1,18 @@
 id: T-2025-12-19-001
-beschreibung: SRS Korrektur der Laufnummenr
+beschreibung: SRS Korrektur der Laufnummenr + neue Korrektur HazLog
 projekt: BLS Netz
 dokument_nr: BU_5490864
 dokument_name: SRS Am 843
 auftrag_erhalten: '2025-12-19'
-faellig_bis: '2026-01-05'
+faellig_bis: '2026-01-20'
 weitere_dokumente: []
 notizen: ''
-follow_up: Review offen (Reda)
-status: READY
+follow_up: '08.01.2025 SRS freigegeben, nun anpassung wegen HazLog offen.
+
+  06.01.2025 Warten auf anpassung HazLog und Freigabe Reda um nachher Anpassungen
+  vornehemen zu können.
+
+  Review offen (Reda)'
+status: OPEN
 dringlichkeit: 2
 verlinkte_fragen: []

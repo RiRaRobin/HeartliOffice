@@ -1,16 +1,14 @@
 id: Q-2025-11-17-001
 person: FSK BLS-N
-frage: '- Fehler in SRS Am - Dok im Review (hindert mich aber nicht an der SAS zu
-  abreiten)
-
-  - Installation Constraints an AS?
-
-  - Typentestbericht, Ready aber einige Inputs Fehlen, sind mit Philipp besprochen
-
-  - neues Benutzerhandbuch Tm von AS (rev 2.0) - hat das jemand geprüft? können wir
-  künftig eine Push benachrichtigung via Teams machen?
-
-  - (SiNa II besprechen - durch CAY ertsellen lassen?)'
+frage: "09.01.2025\n- HB alle im Review. Austehehend von Philipp und Cyril + Frage\
+  \ von Rene betreffend der Exportet Constraint offen + Begriffe wie Shunting etc\
+  \ sind in den HB auch übersetzt, welche Sprache soll verwendet werden.? (Fz-HB sollte\
+  \ ich heute von Philipp erhalten)\n- V&V Installation Constraints: soll Reda machen\
+  \ (nachdem er mich mehrfach versetzt hat)\n- Typentestbericht im Review bei Reda\
+  \ (seit 18.12.2025)\n- Constraint Mapping und Bewertung bei Joel im Review seit\
+  \ Montag 05.01.2025\n(installation constarints Zulieferer - Ziel besprechen)\n\n\
+  - was hat prio?\n\tSRS & SAS anpassung oder EN 50128?\n- wir müssen mal noch über\
+  \ den SiNa II Nachweis reden.\n- INFO: Beschaffung - Audit"
 status: OPEN
 typ: FRAGE
 linked_task_id: ''
@@ -18,9 +16,9 @@ created_at: '2025-11-17'
 closed_at: ''
 notes: 'Typenstestplan / Testplan - Januar 2026
 
-
   IBS Plan
 
+  V&V Installation Constraints in meinem Lead
 
 
-  V&V Installation Constraints in meinem Lead'
+  Schema Review Bericht'

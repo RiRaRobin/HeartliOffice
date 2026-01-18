@@ -1,0 +1,16 @@
+id: T-2026-01-15-004
+beschreibung: DocLi nachtragen
+projekt: SBB Evo
+dokument_nr: ''
+dokument_name: ''
+auftrag_erhalten: '2026-01-15'
+faellig_bis: '2026-01-16'
+weitere_dokumente: []
+notizen: "Fit and Curve / Proof of <<Mass und Spiel Protokoll>>\nBU_4731357\nVersion\
+  \ h\n \nLegitimation Einbauhöhen BTM/LTM Antenne\nBU_6678417\nVersion _\n\nBU_4728203\n\
+  Release Note Integration On-Board CCS 1b\nBU_6266358\nRelease Note Integration On-Board\
+  \ CCS 1e\nBU_6266375\nRelease Note Integration On-Board CCS 2b"
+follow_up: ''
+status: OPEN
+dringlichkeit: 2
+verlinkte_fragen: []

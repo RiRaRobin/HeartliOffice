@@ -2,13 +2,24 @@ id: T-2025-12-15-002
 beschreibung: 'TCMS-GW: Verpflichtende Anforderungen aus EN-50128 zusammentragen (später
   noch begründen warum welche nicht erfüllt wurden)'
 projekt: BLS Netz
-dokument_nr: ''
+dokument_nr: BU_6667084
 dokument_name: ''
-auftrag_erhalten: '2024-12-15'
-faellig_bis: '2026-01-05'
+auftrag_erhalten: '2025-12-15'
+faellig_bis: '2026-01-15'
 weitere_dokumente: []
 notizen: ''
-follow_up: 18.12.2025 bei Cyril termin mit V&V noch offen
-status: READY
+follow_up: '14.01.2025 Kommentare Eingearbeitet, 2 offen
+
+  13.01.2025 Feedback erhalten --> Einarbeiten
+
+  12.01.2025 an Cyril zum lesen gegeben (er sagte er habe eh kommentare...)
+
+  08.01.2025 Besprochen mit V&V --> anpassung Dokument, so dass der Prozess durchlaufen
+  werden kann.
+
+  offene Punkte der Einstufung bei Rene in klärung
+
+  18.12.2025 bei Cyril termin mit V&V noch offen'
+status: OPEN
 dringlichkeit: 1
 verlinkte_fragen: []

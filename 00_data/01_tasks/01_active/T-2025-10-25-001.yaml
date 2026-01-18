@@ -4,7 +4,7 @@ projekt: BLS Netz
 dokument_nr: BU_6591909
 dokument_name: IHB Tm 235
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2026-01-06'
+faellig_bis: '2026-01-16'
 weitere_dokumente: []
 notizen: 'secRAC / SRAC betreffend SW stände einpflegen
 
@@ -24,7 +24,9 @@ follow_up: '11.11.2025: Fusszeile nach einchecken prüfen, Kopfzeile schräg, Au
   14.11.2025 in prüfung BLS
 
   21.11.2025 Feedback SL: Begriffe angleichen (inhaltlich aber gut - sehr angenehmes
-  gespräch)'
+  gespräch)
+
+  12.01.2025 Feedback von allen ausser Philipp erhalten'
 status: READY
 dringlichkeit: 3
 verlinkte_fragen: []

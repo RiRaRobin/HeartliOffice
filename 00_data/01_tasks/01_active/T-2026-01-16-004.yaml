@@ -1,0 +1,26 @@
+id: T-2026-01-16-004
+beschreibung: Release Note Integration On-Board anpassen
+projekt: SBB Evo
+dokument_nr: ''
+dokument_name: ''
+auftrag_erhalten: '2026-01-16'
+faellig_bis: '2026-01-19'
+weitere_dokumente: []
+notizen: 'BU_4728203
+
+  Release Note Integration On-Board CCS 1b
+
+  BU_6266358
+
+  Release Note Integration On-Board CCS 1e
+
+  BU_6266375
+
+  Release Note Integration On-Board CCS 2b
+
+
+  Antwort Funkwerk offen - betreffend richtiges änderungsdings'
+follow_up: ''
+status: OPEN
+dringlichkeit: 1
+verlinkte_fragen: []

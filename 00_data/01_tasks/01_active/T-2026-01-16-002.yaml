@@ -1,0 +1,25 @@
+id: T-2026-01-16-002
+beschreibung: Review SRACS und Hazard Log
+projekt: SBB Evo
+dokument_nr: ''
+dokument_name: ''
+auftrag_erhalten: '2026-01-16'
+faellig_bis: '2026-01-16'
+weitere_dokumente: []
+notizen: 'RR: BU_5681472
+
+
+
+  BU_4726325
+
+  Exported Constraints on-board CCS / SRAC Table
+
+  BU_4587472
+
+  Hazard Log
+
+  '
+follow_up: ''
+status: OPEN
+dringlichkeit: 1
+verlinkte_fragen: []

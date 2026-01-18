@@ -4,7 +4,7 @@ projekt: BLS Netz
 dokument_nr: BU_6591887
 dokument_name: BHB Tm 235 & Am 843
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2026-01-06'
+faellig_bis: '2026-01-16'
 weitere_dokumente: []
 notizen: 'prüfen lassen von Cyril und Philipp
 
@@ -21,7 +21,11 @@ follow_up: '29.10.2025 Bei Cyril und Philipp in Prüfung
   17.11.2025 liegt bei BLS
 
   21.11.2025 Feedback SL: Begriffe angleichen (inhaltlich aber gut - sehr angenehmes
-  gespräch)'
+  gespräch)
+
+  12.01.2025 Feedback von allen ausser Philipp erhalten
+
+  13.01.2025 NNTV exports im BHB ergänzen (Hinweis Reda)'
 status: READY
 dringlichkeit: 3
 verlinkte_fragen: []

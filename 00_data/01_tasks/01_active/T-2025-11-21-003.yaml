@@ -4,7 +4,7 @@ projekt: BLS Netz
 dokument_nr: BU_6401471
 dokument_name: ''
 auftrag_erhalten: '2025-11-21'
-faellig_bis: '2026-01-09'
+faellig_bis: '2026-01-16'
 weitere_dokumente: []
 notizen: 'F:\Engineering\STASIG\02_ENG_ETCS\32_Projects\ETCS_CH_BLS Netz_S-20028\07
   Homologation\07 Test specifications and Reports\07.99 Typentestbericht
@@ -24,5 +24,5 @@ notizen: 'F:\Engineering\STASIG\02_ENG_ETCS\32_Projects\ETCS_CH_BLS Netz_S-20028
   Suppliers Documents\09 SBB\IOP_Tests\TeNa_ETCS CH_RABe531_EVO_GA04.01.02_V 1.0_signiert.pdf'
 follow_up: 18.12.2025 im Review bei Reda
 status: READY
-dringlichkeit: 1
+dringlichkeit: 3
 verlinkte_fragen: []

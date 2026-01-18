@@ -4,13 +4,17 @@ projekt: BLS Netz
 dokument_nr: ''
 dokument_name: V&V Installation Constraints Am 843
 auftrag_erhalten: '2025-12-18'
-faellig_bis: '2026-01-05'
+faellig_bis: '2026-01-30'
 weitere_dokumente: []
 notizen: 'Ustü von Joel
 
 
   Neu aufbereiten, Vorlage von Tm ist zu unübersichtlich und zu umfangreich '
-follow_up: Reda!
+follow_up: '06.01.2025 BEsprechen am Weekly Meeting
+
+  Reda!
+
+  '
 status: OPEN
-dringlichkeit: 2
+dringlichkeit: 4
 verlinkte_fragen: []
