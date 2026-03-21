@@ -1,0 +1,20 @@
+id: T-2026-02-13-001
+beschreibung: 'SRAC Am ergänzen - HB Anpassung?
+
+  Mir kommt gerade in den Sinn. Bei der Am kann der LF bei der Zugdateneingabe für
+  die Fahrzeuglänge einen Wert grösser als 750m eingeben. gem. FDV ist ja im normalfall
+  bis 750m. Die BLS möchte aber auch FZ zb aus einem Tunnel schleppen können die bereits
+  750m lang sind + könnte es sein dass sich hier etwas ändert. Sollten wir hier ein
+  SRAC definieren der die Verantwortung zum Betreiber spielt?'
+projekt: BLS Netz
+dokument_nr: ''
+dokument_name: ''
+auftrag_erhalten: '2026-02-13'
+faellig_bis: '2026-03-13'
+weitere_dokumente: []
+notizen: ''
+follow_up: 18.02.2026 Laut Rene kein SRAC da FDV keine Quelle für anforderungen ist.
+  Vlt HB ergänzen wenn überhaupt? Rocio fragen.
+status: OPEN
+dringlichkeit: 2
+verlinkte_fragen: []

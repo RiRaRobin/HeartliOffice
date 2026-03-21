@@ -1,0 +1,13 @@
+id: T-2026-03-03-001
+beschreibung: Data Prep Anpassungen
+projekt: BLS Netz
+dokument_nr: ''
+dokument_name: ''
+auftrag_erhalten: '2026-03-03'
+faellig_bis: '2026-03-05'
+weitere_dokumente: []
+notizen: Zellen vertauscht und identifier set to CHR003
+follow_up: 24.02.2026 an Reda gegeben und live besprochen (ohne identifier)
+status: DONE
+dringlichkeit: 2
+verlinkte_fragen: []

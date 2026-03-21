@@ -1,10 +1,10 @@
 id: T-2025-10-25-001
-beschreibung: IHB Tm 235
+beschreibung: IHB Tm 235 V2.0
 projekt: BLS Netz
 dokument_nr: BU_6591909
 dokument_name: IHB Tm 235
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2026-01-16'
+faellig_bis: '2026-03-27'
 weitere_dokumente: []
 notizen: 'secRAC / SRAC betreffend SW stände einpflegen
 
@@ -15,9 +15,13 @@ notizen: 'secRAC / SRAC betreffend SW stände einpflegen
 
 
   Hasler IHB akt.'
-follow_up: '11.11.2025: Fusszeile nach einchecken prüfen, Kopfzeile schräg, Automatische
-  Silbentrennung aktivieren, Design vereinheitlichen, auf SBB untersuchen, Warnhinweise
-  auf einmal formatieren
+follow_up: '
+
+  ----------------------------------------------
+
+  11.11.2025: Fusszeile nach einchecken prüfen, Kopfzeile schräg, Automatische Silbentrennung
+  aktivieren, Design vereinheitlichen, auf SBB untersuchen, Warnhinweise auf einmal
+  formatieren
 
   12.11.2025 bis auf wenige Fragen, und fehlnde Dokumente FERTIG
 
@@ -26,7 +30,13 @@ follow_up: '11.11.2025: Fusszeile nach einchecken prüfen, Kopfzeile schräg, Au
   21.11.2025 Feedback SL: Begriffe angleichen (inhaltlich aber gut - sehr angenehmes
   gespräch)
 
-  12.01.2025 Feedback von allen ausser Philipp erhalten'
-status: READY
+  12.01.2025 Feedback von allen ausser Philipp erhalten
+
+  27.01.2025 technisch Relevantes eingepflegt und in Friegabe zu Philipp gesendet
+
+  29.01.2026 kommentare von Philipp eingepflegt und besprochen
+
+  30.01.2026 freigegegen'
+status: OPEN
 dringlichkeit: 3
 verlinkte_fragen: []

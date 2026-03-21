@@ -5,10 +5,12 @@ projekt: BLS Netz
 dokument_nr: BU_6667084
 dokument_name: ''
 auftrag_erhalten: '2025-12-15'
-faellig_bis: '2026-01-15'
+faellig_bis: '2026-03-20'
 weitere_dokumente: []
 notizen: ''
-follow_up: '14.01.2025 Kommentare Eingearbeitet, 2 offen
+follow_up: '19.01.2026 in Review zu Reda (und dann Rocio)
+
+  14.01.2025 Kommentare Eingearbeitet, 2 offen
 
   13.01.2025 Feedback erhalten --> Einarbeiten
 
@@ -20,6 +22,6 @@ follow_up: '14.01.2025 Kommentare Eingearbeitet, 2 offen
   offene Punkte der Einstufung bei Rene in klärung
 
   18.12.2025 bei Cyril termin mit V&V noch offen'
-status: OPEN
+status: READY
 dringlichkeit: 1
 verlinkte_fragen: []

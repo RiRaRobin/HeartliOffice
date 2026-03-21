@@ -4,11 +4,15 @@ projekt: BLS Netz
 dokument_nr: BU_5490939
 dokument_name: SAS Am 843
 auftrag_erhalten: '2025-12-09'
-faellig_bis: '2026-01-23'
+faellig_bis: '2026-03-13'
 weitere_dokumente: []
 notizen: 'EN 14033 nicht Anwendbar auf Am --> SAS: REQA_100, 102, ... --> SRS: REQ_44
-  --> Haz-Log: SM_S-20028_14 --> mit Rene (und V&V) prüfen'
-follow_up: ''
-status: OPEN
+  --> Haz-Log: SM_S-20028_14 --> mit Rene (und V&V) prüfen
+
+
+  RR: BU_5490946'
+follow_up: 10.02.2026 alle änderungen aus der SRS ausser kommentar 3 von Philipp sind
+  eingepflegt (keine Änderung)
+status: READY
 dringlichkeit: 1
 verlinkte_fragen: []

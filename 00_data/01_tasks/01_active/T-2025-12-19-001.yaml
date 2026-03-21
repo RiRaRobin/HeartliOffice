@@ -4,15 +4,28 @@ projekt: BLS Netz
 dokument_nr: BU_5490864
 dokument_name: SRS Am 843
 auftrag_erhalten: '2025-12-19'
-faellig_bis: '2026-01-20'
+faellig_bis: '2026-03-03'
 weitere_dokumente: []
-notizen: ''
-follow_up: '08.01.2025 SRS freigegeben, nun anpassung wegen HazLog offen.
+notizen: 'TSI Noise ist potentiell gefährlich. Prüfen wie der Nachweis für TM mit
+  EN XY erledigt wurde
+
+
+  SRS:    BU_5490864
+
+  RR:      BU_5490882'
+follow_up: '12.02.2026 komm 3) mit philipp besprechen
+
+  02.02.2026 weitere anpassungen SRS gem Rene erhalten (Temas). einpflegen und im
+  RR erwähnen.
+
+  28.01.2026 Alle Anpüassungen eingepfelgt und in Review gegegeben
+
+  08.01.2025 SRS freigegeben, nun anpassung wegen HazLog offen.
 
   06.01.2025 Warten auf anpassung HazLog und Freigabe Reda um nachher Anpassungen
   vornehemen zu können.
 
   Review offen (Reda)'
-status: OPEN
+status: READY
 dringlichkeit: 2
 verlinkte_fragen: []
