@@ -4,7 +4,7 @@ projekt: SBB Evo
 dokument_nr: ''
 dokument_name: ''
 auftrag_erhalten: '2026-03-05'
-faellig_bis: '2026-03-06'
+faellig_bis: '2026-04-02'
 weitere_dokumente: []
 notizen: 'Daten von ESC Check
 
@@ -13,7 +13,10 @@ notizen: 'Daten von ESC Check
   Excel Auszüge
 
   '
-follow_up: ''
+follow_up: '31.03.2026
+
+  Daten von Simon ausstehend. Nochmals nachfragen bei SW ob sie noch etwas brauchen.
+  wenn nicht kann das Thema abgehacjkt werden, da sowieso getestet werden muss.'
 status: OPEN
 dringlichkeit: 1
 verlinkte_fragen: []

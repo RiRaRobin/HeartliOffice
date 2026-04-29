@@ -4,7 +4,7 @@ projekt: BLS Netz
 dokument_nr: BU_6591887
 dokument_name: BHB Tm 235 & Am 843
 auftrag_erhalten: '2025-10-25'
-faellig_bis: '2026-03-27'
+faellig_bis: '2026-04-24'
 weitere_dokumente: []
 notizen: 'prüfen lassen von Cyril und Philipp
 
@@ -17,7 +17,11 @@ notizen: 'prüfen lassen von Cyril und Philipp
 
 
   Fusszeile falsche Schriftart'
-follow_up: '16.03.2026 Event 9762 muss ins HB aufgenommen werden.
+follow_up: '16.03.2026 Event 9762 muss ins HB aufgenommen werden. (Kap. 7.3.1.5)
+
+  Kap. 8.1.5 ist falsch --> daten werden nicht von der VCU gesendet
+
+  Kap. 7.3.1.5 ist falsch --> EB/TCO Test wird nicht automatisch ausgeführt.
 
 
   ------------------------------------------------

@@ -13,6 +13,6 @@ notizen: 'EN 14033 nicht Anwendbar auf Am --> SAS: REQA_100, 102, ... --> SRS: R
   RR: BU_5490946'
 follow_up: 10.02.2026 alle änderungen aus der SRS ausser kommentar 3 von Philipp sind
   eingepflegt (keine Änderung)
-status: READY
+status: DONE
 dringlichkeit: 1
 verlinkte_fragen: []

@@ -2,7 +2,7 @@ id: Q-2025-11-28-001
 person: Idee
 frage: 'Ein DataScientist könnte:
 
-  - Eine DB erstellen die es einem Verkäufer ermöglicht, einzugeben welche anforderunegen
+  - Eine DB erstellen die es dem BID ermöglicht, einzugeben welche anforderunegen
   vorhanden sind und das System könnte die notwendigen Komponenten auflsiten.'
 status: OPEN
 typ: INFO
