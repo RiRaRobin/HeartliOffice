@@ -4,18 +4,9 @@ Die wichtigsten Links und Informationsquellen
 
 ---
 ## Zeiterfassung
-
-Im Stadler Netzwerk:
-
-- https://sap-hrp.stadlerrail.com/sap/bc/ui2/flp?sap-client=100&sap-language=DE#Shell-home
-
-Extern:
-
-- https://stadler-rail-prd-cis.launchpad.cfapps.eu20.hana.ondemand.com/site/S4P#Shell-home
-
-Arbeitszeit Rechner:
-
-- https://safesharegithub.github.io/stundenrechner/
+- [Im Stadler Netzwerk](https://sap-hrp.stadlerrail.com/sap/bc/ui2/flp?sap-client=100&sap-language=DE#Shell-home)
+- [Extern](https://stadler-rail-prd-cis.launchpad.cfapps.eu20.hana.ondemand.com/site/S4P#Shell-home)
+- [Arbeitszeit Rechner](https://safesharegithub.github.io/stundenrechner)
 
 Kostenstellen zum Nachschlagen:
 
