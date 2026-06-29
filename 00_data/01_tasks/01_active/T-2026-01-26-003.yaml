@@ -1,13 +1,15 @@
 id: T-2026-01-26-003
 beschreibung: Betriebs-Erprobungsbericht erstellen und führen für SiNa V
 projekt: SBB Evo
-dokument_nr: ''
+dokument_nr: BU_6786122
 dokument_name: ''
 auftrag_erhalten: '2026-01-26'
 faellig_bis: '2026-06-12'
 weitere_dokumente: []
 notizen: ''
-follow_up: 26.01.2025 Joel hat jemanden den diesen schreibt (Service)
+follow_up: '26.01.2025 Joel hat jemanden den diesen schreibt (Service)
+
+  18.06.2026 erster Review genmacht und jetzt neu überarbeitet. neue Prüfung fällig'
 status: READY
 dringlichkeit: 1
 verlinkte_fragen: []
